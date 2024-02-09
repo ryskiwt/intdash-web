@@ -7,14 +7,14 @@ def ls_get(item_key, key=None):
     if item_key is None:
         return None
 
-    item = ls.getItem(item_key, key=key if key is None else f"get_item_{item_key}")
+    item = ls.getItem(item_key, key=f"get_item_{item_key}" if (key is None) else key)
     if (item is None) or ("storage" not in item) or (item["storage"] is None):
         return None
 
     return item["storage"]["value"]
 
 def ls_set(item_key, item_value, key=None):
-    ls.setItem(item_key, item_value, key=key if key is None else f"set_item_{item_key}")
+    ls.setItem(item_key, item_value, key=f"set_item_{item_key}" if (key is None) else key)
 
 
 st.title("認証情報")
