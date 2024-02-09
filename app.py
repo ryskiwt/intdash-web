@@ -5,13 +5,17 @@ ls = LocalStorage()
 
 st.title("認証情報")
 
-st.write(f"url: {ls.getItem("url")}")
-st.write(f"token: {ls.getItem("token")}")
-st.write(f"project_uuid: {ls.getItem("project_uuid")}")
+url = ls.getItem("url")
+token = ls.getItem("token")
+project_uuid = ls.getItem("project_uuid")
 
-url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com")
-token = st.text_input(label="APIトークン", type="password")
-project_uuid = st.text_input("プロジェクトID")
+st.write(f"url: {url}")
+st.write(f"token: {token}")
+st.write(f"project_uuid: {project_uuid}")
+
+url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=url)
+token = st.text_input(label="APIトークン", type="password", value=token)
+project_uuid = st.text_input("プロジェクトID", value=project_uuid)
 
 if st.button("保存する"):
     ls.setItem("url", url)
@@ -23,7 +27,7 @@ if st.button("保存する"):
     st.session_state["project_uuid"] = project_uuid
 
     st.write("session state")
-    st.write(f"url: {st.session_state["url"]}")
-    st.write(f"token: {st.session_state["token"]}")
-    st.write(f"project_uuid: {st.session_state["project_uuid"]}")
+    st.write(f"url: {url}")
+    st.write(f"token: {token}")
+    st.write(f"project_uuid: {project_uuid}")
 
