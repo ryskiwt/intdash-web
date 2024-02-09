@@ -21,27 +21,22 @@ st.title("認証情報")
 
 if ("url" not in st.session_state) or (st.session_state.url is None):
     st.session_state.url = ls_get("url")
+if ("token" not in st.session_state) or (st.session_state.token is None):
+    st.session_state.token = ls_get("token")
+if ("project_uuid" not in st.session_state) or (st.session_state.project_uuid is None):
+    st.session_state.project_uuid = ls_get("project_uuid")
+
 url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=st.session_state.url)
+token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
+project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
+
+
 if url:
     st.session_state.url = url
     ls_set("url", url)
-
-if ("token" not in st.session_state) or (st.session_state.token is None):
-    st.session_state.token = ls_get("token")
-token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
 if token:
     st.session_state.token = token
     ls_set("token", token)
-
-if ("project_uuid" not in st.session_state) or (st.session_state.project_uuid is None):
-    st.session_state.project_uuid = ls_get("project_uuid")
-project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
 if project_uuid:
     st.session_state.project_uuid = project_uuid
     ls_set("project_uuid", project_uuid)
-
-st.write("session state")
-st.write(f"url: {st.session_state.url}")
-st.write(f"token: {st.session_state.token}")
-st.write(f"project_uuid: {st.session_state.project_uuid}")
-
