@@ -3,7 +3,7 @@ from streamlit_local_storage import LocalStorage
 
 ls = LocalStorage() 
 
-def ls_get(item_key, key):
+def ls_get(item_key, key=None):
     if item_key is None:
         return None
 
