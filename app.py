@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit-local-storage import LocalStorage
+from streamlit_local_storage import LocalStorage
 from streamlit_javascript import st_javascript
 
 ls = LocalStorage() 
