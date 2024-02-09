@@ -22,10 +22,10 @@ st.title("認証情報")
 if ("url" not in st.session_state) or (st.session_state.url is None):
     st.session_state.url = ls_get("url")
 
-if ("token" not in st.session_state) or (st.session_state.token is None)::
+if ("token" not in st.session_state) or (st.session_state.token is None):
     st.session_state.token = ls_get("token")
 
-if ("project_uuid" not in st.session_state) or (st.session_state.project_uuid is None)::
+if ("project_uuid" not in st.session_state) or (st.session_state.project_uuid is None):
     st.session_state.project_uuid = ls_get("project_uuid")
 
 st.write(f"url: {st.session_state.url}")
