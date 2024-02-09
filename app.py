@@ -2,41 +2,27 @@ import streamlit as st
 from streamlit_javascript import st_javascript
 import requests
 
-def get_from_local_storage(k):
+def get_from_ls(k):
     return st_javascript(
         f"localStorage.getItem('{k}');"
     )
 
-def set_to_local_storage(k, v):
+def set_to_ls(k, v):
     st_javascript(
         f"localStorage.setItem('{k}', {v});"
     )
 
-url = st.text_input("intdashサーバーURL", placeholder="https://example.com")
-token = st.text_input("APIトークン", type="password")
-project_uuid = st.text_input("プロジェクトID")
-node_id = st.text_input("ノードID")
+st.title("認証情報")
 
+url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=get_from_ls("url"))
+token = st.text_input(label="APIトークン", type="password", value=get_from_ls("token"))
+project_uuid = st.text_input("プロジェクトID", value=get_from_ls("project_uuid"))
 
-if st.button("接続する"):
-    resp = requests.get(
-        url=f"{url}/api/v1/projects/{project_uuid}/measurements",
-        headers={"X-Intdash-Token": token},
-        params={
-            "project_uuid": project_uuid,
-        }
-    )
-    resp.raise_for_status()
-    items = resp.json()
+if st.button("保存する"):
+    set_to_ls("url", url)
+    set_to_ls("token", token)
+    set_to_ls("project_uuid", project_uuid)
 
-    for item in items:
-        container = st.container(border=True)
-        with container:
-            st.write(item["name"])
-            st.write(item["uuid"])
-            st.write(item["base_time"])
-            st.write(item["duration"])
-            st.write(item["edge_uuid"])
-            st.write(item)
-
-
+    st.session_state["url"] = url
+    st.session_state["token"] = token
+    st.session_state["project_uuid"] = project_uuid
