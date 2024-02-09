@@ -63,7 +63,7 @@ except Exception as e:
     st.session_state.user_display_name = None
     st.error(f"入力に誤りがあります。: {e}")
 
-st.sidebar.markdown("# 認証情報")
-st.sidebar.write("サーバー:", st.session_state.url)
-st.sidebar.write("プロジェクト:", st.session_state.project_name)
-st.sidebar.write("ユーザー:", st.session_state.user_display_name)
+st.sidebar.markdown("## 認証情報")
+st.sidebar.write("**サーバー:**", st.session_state.url)
+st.sidebar.write("**プロジェクト:**", st.session_state.project_name)
+st.sidebar.write("**ユーザー:**", st.session_state.user_display_name)
