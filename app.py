@@ -13,7 +13,7 @@ def ls_get(item_key, key=None):
 
     return item["storage"]["value"]
 
-def ls_set(item_key, item_value, key):
+def ls_set(item_key, item_value, key=None):
     ls.setItem(item_key, item_value, key=key if key is None else f"set_item_{item_key}")
 
 
