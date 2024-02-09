@@ -17,9 +17,6 @@ def ls_get(item_key, key=None):
 def ls_set(item_key, item_value, key=None):
     ls.setItem(item_key, item_value, key=f"set_item_{item_key}" if (key is None) else key)
 
-
-st.header("認証情報", divider=True)
-
 if ("url" not in st.session_state) or (st.session_state.url is None):
     st.session_state.url = ls_get("url")
 if ("token" not in st.session_state) or (st.session_state.token is None):
@@ -29,9 +26,18 @@ if ("project_uuid" not in st.session_state) or (st.session_state.project_uuid is
 if ("project_name" not in st.session_state) or (st.session_state.project_uuid is None):
     st.session_state.project_name = ls_get("project_name")
 
+st.header("認証情報", divider=True)
+
 url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=st.session_state.url)
 token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
 project_uuid = st.text_input(label="プロジェクトID", placeholder="00000000-0000-0000-0000-000000000000", value=st.session_state.project_uuid)
+
+st.session_state.url = url
+st.session_state.token = token
+st.session_state.project_uuid = project_uuid
+ls_set("url", url)
+ls_set("token", token)
+ls_set("project_uuid", project_uuid)
 
 try:
     resp = requests.get(
@@ -41,14 +47,7 @@ try:
     resp.raise_for_status()
     project_name = resp.json()["name"]
 
-    st.session_state.url = url
-    st.session_state.token = token
-    st.session_state.project_uuid = project_uuid
     st.session_state.project_name = project_name
-
-    ls_set("url", url)
-    ls_set("token", token)
-    ls_set("project_uuid", project_uuid)
     ls_set("project_name", project_name)
 
 except:
