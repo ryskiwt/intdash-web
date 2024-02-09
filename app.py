@@ -39,12 +39,15 @@ if token:
     st.session_state.token = token
     ls_set("token", token)
 if project_uuid:
-    resp = requests.get(
-        url=f"{url}/api/v1/projects/{project_uuid}",
-        headers={"X-Intdash-Token": token},
-    )
-    resp.raise_for_status()
-    project_name = resp.json()["name"]
+    try:
+        resp = requests.get(
+            url=f"{url}/api/v1/projects/{project_uuid}",
+            headers={"X-Intdash-Token": token},
+        )
+        resp.raise_for_status()
+        project_name = resp.json()["name"]
+    except:
+        st.error("入力に誤りがあります。")
 
     st.session_state.project_uuid = project_uuid
     ls_set("project_uuid", project_uuid)
