@@ -54,8 +54,8 @@ try:
 except:
     st.error("入力に誤りがあります。")
 
-masked_token = None if token is None else "*****"
+masked_token = None if st.session_state.token is None else "*****"
 st.sidebar.markdown("# 認証情報")
-st.sidebar.markdown(f"- **サーバーURL**: {url}")
+st.sidebar.markdown(f"- **サーバーURL**: {st.session_state.url}")
 st.sidebar.markdown(f"- **APIトークン**: {masked_token}")
-st.sidebar.markdown(f"- **プロジェクト**: {project_name}")
+st.sidebar.markdown(f"- **プロジェクト**: {st.session_state.project_name}")
