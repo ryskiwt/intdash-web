@@ -1,22 +1,24 @@
 import streamlit as st
 import requests
 
+st.text_input("UUID")
 st.text_input("計測名")
 st.date_input("開始日時（日付）")
-st.time_input("開始日時（時刻）")
+st.time_input("開始日時（時刻）", value=None)
+st.number_input("開始日時（小数点以下）", min_value=0, max_value=999999999)
 st.date_input("終了日時（日付）")
-st.time_input("終了日時（時刻）")
+st.time_input("終了日時（時刻）", value=None)
+st.number_input("終了日時（小数点以下）", min_value=0, max_value=999999999)
 
-
-
-
-if st.button("接続する"):
+if st.button("検索する"):
     
     resp = requests.get(
-        url=f"{url}/api/v1/projects/{project_uuid}/measurements",
+        url=f"{url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
         headers={"X-Intdash-Token": token},
         params={
-            "project_uuid": project_uuid,
+            "start": project_uuid,
+            "end": project_uuid,
+            "name": project_uuid,
         }
     )
     resp.raise_for_status()
