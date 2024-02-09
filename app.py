@@ -13,8 +13,8 @@ def ls_get(item_key, key=None):
 
     return item["storage"]["value"]
 
-def ls_set(item_key, item_value):
-    ls.setItem(item_key, item_value)
+def ls_set(item_key, item_value, key):
+    ls.setItem(item_key, item_value, key=key if key is None else f"set_item_{item_key}")
 
 
 st.title("認証情報")
@@ -38,13 +38,13 @@ with st.form("creds_form"):
     token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
     project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
     
-    submitted = st.form_submit_button("保存する")
-    if submitted:
+    if st.form_submit_button("保存する"):
         st.session_state.url = url
-        ls_set("url", url)
         st.session_state.token = token
-        ls_set("token", token)
         st.session_state.project_uuid = project_uuid
+
+        ls_set("url", url)
+        ls_set("token", token)
         ls_set("project_uuid", project_uuid)
 
 
