@@ -30,6 +30,10 @@ if ("project_uuid" not in st.session_state) or (st.session_state.project_uuid is
 url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=st.session_state.url)
 token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
 project_uuid = st.text_input(label="プロジェクトID", placeholder="00000000-0000-0000-0000-000000000000", value=st.session_state.project_uuid)
+project_name = None
+
+if not project_uuid:
+    project_uuid = "00000000-0000-0000-0000-000000000000"
 
 try:
     resp = requests.get(
