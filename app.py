@@ -29,7 +29,7 @@ if ("project_uuid" not in st.session_state) or (st.session_state.project_uuid is
 
 url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=st.session_state.url)
 token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
-project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
+project_uuid = st.text_input(label="プロジェクトID", placeholder="00000000-0000-0000-0000-000000000000", value=st.session_state.project_uuid)
 project_name = None
 
 if url:
@@ -39,18 +39,19 @@ if token:
     st.session_state.token = token
     ls_set("token", token)
 if project_uuid:
-    try:
-        resp = requests.get(
-            url=f"{url}/api/v1/projects/{project_uuid}",
-            headers={"X-Intdash-Token": token},
-        )
-        resp.raise_for_status()
-        project_name = resp.json()["name"]
-    except:
-        st.error("入力に誤りがあります。")
-
     st.session_state.project_uuid = project_uuid
     ls_set("project_uuid", project_uuid)
+
+try:
+    resp = requests.get(
+        url=f"{url}/api/v1/projects/{project_uuid}",
+        headers={"X-Intdash-Token": token},
+    )
+    resp.raise_for_status()
+    project_name = resp.json()["name"]
+except:
+    st.error("入力に誤りがあります。")
+
 
 masked_token = None if token is None else "*****"
 st.sidebar.markdown("# 認証情報")
