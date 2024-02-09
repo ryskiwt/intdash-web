@@ -8,7 +8,7 @@ def ls_get(item_key, key=None):
         return None
 
     item = ls.getItem(item_key, key=key if key is None else f"get_item_{item_key}")
-    if item["storage"] is None:
+    if "storage" not in item or item["storage"] is None:
         return None
     else:
         return item["storage"]["value"]
