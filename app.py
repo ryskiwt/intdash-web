@@ -29,17 +29,17 @@ st.write(f"project_uuid: {st.session_state.project_uuid}")
 
 url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=st.session_state.url)
 if url:
-    ls_set("url", url)
+    # ls_set("url", url)
     st.session_state.url = url
 
 token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
 if token:
-    ls_set("token", token)
+    # ls_set("token", token)
     st.session_state.token = token
 
-project_uuid = st.text_input("プロジェクトID", value=st.session_state.project_uuid)
+project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
 if project_uuid:
-    ls_set("project_uuid", project_uuid)
+    # ls_set("project_uuid", project_uuid)
     st.session_state.project_uuid = project_uuid
 
 st.write("session state")
