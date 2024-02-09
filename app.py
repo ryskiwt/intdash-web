@@ -64,6 +64,6 @@ except Exception as e:
     st.error(f"入力に誤りがあります。: {e}")
 
 st.sidebar.markdown("# 認証情報")
-st.sidebar.markdown(f"- **サーバーURL**: {st.session_state.url}")
+st.sidebar.markdown(f"- **サーバー**: {st.session_state.url}")
 st.sidebar.markdown(f"- **プロジェクト**: {st.session_state.project_name}")
 st.sidebar.markdown(f"- **ユーザー**: {st.session_state.user_display_name}")
