@@ -39,7 +39,7 @@ with st.form("creds_form"):
     project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
     
     submitted = st.form_submit_button("保存する")
-    if subbmitted:
+    if submitted:
         st.session_state.url = url
         ls_set("url", url)
         st.session_state.token = token
