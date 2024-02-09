@@ -42,5 +42,7 @@ if project_uuid:
     st.session_state.project_uuid = project_uuid
     ls_set("project_uuid", project_uuid)
 
-st.sidebar.header("認証情報", divider=True)
-st.sidebar.table([["URL", "プロジェクト", "トークン"], [url, project_uuid, None if token is None else "*****"]])
+st.sidebar.markdown("## 認証情報")
+st.sidebar.markdown(f"- **サーバーURL**: {url}")
+st.sidebar.markdown(f"- **プロジェクト**: {project_uuid}")
+st.sidebar.markdown(f"- **APIトークン**: { None if token is None else "*****"}")
