@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit_javascript import st_javascript
 
 def get_from_ls(k):
-    return st_javascript(f"localStorage.getItem('{k}');")
+    return st_javascript(f"localStorage.getItem('{k}') || '';")
 
 def set_to_ls(k, v):
     st_javascript(f"localStorage.setItem('{k}', '{v}');")
