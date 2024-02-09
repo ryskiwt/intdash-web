@@ -44,18 +44,20 @@ try:
     )
     resp.raise_for_status()
     project_name = resp.json()["name"]
-
     st.session_state.project_name = project_name
+except Exception as e:
+    st.session_state.project_name = None
+    st.session_state.user_display_name = None
+    st.error(f"入力に誤りがあります。: {e}")
 
+try:
     resp = requests.get(
         url=f"{url}/api/auth/users/me",
         headers={"X-Intdash-Token": st.session_state.token},
     )
     resp.raise_for_status()
     user_display_name = resp.json()["nickname"]
-
     st.session_state.user_display_name = user_display_name
-
 except Exception as e:
     st.session_state.project_name = None
     st.session_state.user_display_name = None
