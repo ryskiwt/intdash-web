@@ -57,11 +57,11 @@ try:
     st.session_state.user_display_name = user_display_name
 
 except Exception as e:
+    st.session_state.project_name = None
+    st.session_state.user_display_name = None
     st.error(f"入力に誤りがあります。: {e}")
 
-masked_token = None if st.session_state.token is None else "*****"
 st.sidebar.markdown("# 認証情報")
 st.sidebar.markdown(f"- **サーバーURL**: {st.session_state.url}")
 st.sidebar.markdown(f"- **プロジェクト**: {st.session_state.project_name}")
-st.sidebar.markdown(f"- **APIトークン**: {masked_token}")
-st.sidebar.markdown(f"- **ユーザー**: {user_display_name}")
+st.sidebar.markdown(f"- **ユーザー**: {st.session_state.user_display_name}")
