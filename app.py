@@ -20,6 +20,10 @@ def ls_set(item_key, item_value, key=None):
 
 st.title("認証情報")
 
+item = ls.getItem("url")
+st.write(f"aaa: {item}")
+
+
 if "url" not in st.session_state:
     st.session_state.url = ls_get("url")
 
