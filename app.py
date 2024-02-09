@@ -8,13 +8,7 @@ def ls_get(item_key, key=None):
         return None
 
     item = ls.getItem(item_key, key=key if key is None else f"get_item_{item_key}")
-    if item is None:
-        return None
-
-    if "storage" not in item:
-        return None
-
-    if item["storage"] is None:
+    if (item is None) or ("storage" not in item) or (item["storage"] is None):
         return None
 
     return item["storage"]["value"]
@@ -34,20 +28,22 @@ st.write(f"token: {token}")
 st.write(f"project_uuid: {project_uuid}")
 
 url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=url)
-token = st.text_input(label="APIトークン", type="password", value=token)
-project_uuid = st.text_input("プロジェクトID", value=project_uuid)
-
-if st.button("保存する"):
+if url:
     ls_set("url", url)
-    ls_set("token", token)
-    ls_set("project_uuid", project_uuid)
-
     st.session_state["url"] = url
+
+token = st.text_input(label="APIトークン", type="password", value=token)
+if token:
+    ls_set("token", token)
     st.session_state["token"] = token
+
+project_uuid = st.text_input("プロジェクトID", value=project_uuid)
+if project_uuid:
+    ls_set("project_uuid", project_uuid)
     st.session_state["project_uuid"] = project_uuid
 
-    st.write("session state")
-    st.write(f"url: {url}")
-    st.write(f"token: {token}")
-    st.write(f"project_uuid: {project_uuid}")
+st.write("session state")
+st.write(f"url: {url}")
+st.write(f"token: {token}")
+st.write(f"project_uuid: {project_uuid}")
 
