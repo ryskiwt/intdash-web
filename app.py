@@ -22,7 +22,7 @@ st.title("認証情報")
 item = ls.getItem("url")
 st.write(item)
 
-item = ls.getItem("url", key="get_item_url")
+item = ls_get("url")
 st.write(item)
 
 
