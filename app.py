@@ -1,6 +1,6 @@
 import streamlit as st
 from streamlit_local_storage import LocalStorage
-import pandas as pd
+import requests
 
 ls = LocalStorage() 
 
@@ -39,11 +39,18 @@ if token:
     st.session_state.token = token
     ls_set("token", token)
 if project_uuid:
+    resp = requests.get(
+        url=f"{url}/api/v1/projects/{project_uuid}",
+        headers={"X-Intdash-Token": token},
+    )
+    resp.raise_for_status()
+    project_name = resp.json()["name"]
+
     st.session_state.project_uuid = project_uuid
     ls_set("project_uuid", project_uuid)
 
 masked_token = None if token is None else "*****"
-st.sidebar.markdown("## 認証情報")
+st.sidebar.markdown("# 認証情報")
 st.sidebar.markdown(f"- **サーバーURL**: {url}")
-st.sidebar.markdown(f"- **プロジェクト**: {project_uuid}")
 st.sidebar.markdown(f"- **APIトークン**: {masked_token}")
+st.sidebar.markdown(f"- **プロジェクト**: {project_name}")
