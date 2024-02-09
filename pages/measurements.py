@@ -1,6 +1,15 @@
 import streamlit as st
 import requests
 
+st.text_input("計測名")
+st.date_input("開始日時（日付）")
+st.time_input("開始日時（時刻）")
+st.date_input("終了日時（日付）")
+st.time_input("終了日時（時刻）")
+
+
+
+
 if st.button("接続する"):
     
     resp = requests.get(
