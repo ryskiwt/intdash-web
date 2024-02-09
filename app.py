@@ -65,7 +65,7 @@ except Exception as e:
     st.error(f"入力に誤りがあります。: {e}")
 
 
-parsed_url = parse(st.session_state.url)
+parsed_url = urlparse(st.session_state.url)
 st.sidebar.markdown("## 認証情報")
 st.sidebar.markdown(f"**サーバー:** [{parsed_url.hostname}]({st.session_state.url}/console/projects/{st.session_state.project_uuid})")
 st.sidebar.write("**プロジェクト:**", st.session_state.project_name)
