@@ -51,7 +51,7 @@ try:
     ls_set("project_name", project_name)
 
 except Exception as e:
-    st.error("入力に誤りがあります。: {e}")
+    st.error(f"入力に誤りがあります。: {e}")
 
 masked_token = None if st.session_state.token is None else "*****"
 st.sidebar.markdown("# 認証情報")
