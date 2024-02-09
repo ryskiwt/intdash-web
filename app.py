@@ -32,20 +32,21 @@ st.write(f"url: {st.session_state.url}")
 st.write(f"token: {st.session_state.token}")
 st.write(f"project_uuid: {st.session_state.project_uuid}")
 
-url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=st.session_state.url)
-if url:
-    st.session_state.url = url
-    ls_set("url", url)
 
-token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
-if token:
-    st.session_state.token = token
-    ls_set("token", token)
+with st.form("creds_form"):
+    url = st.text_input(label="intdashサーバーURL", placeholder="https://example.com", value=st.session_state.url)
+    token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
+    project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
+    
+    submitted = st.form_submit_button("保存する")
+    if subbmitted:
+        st.session_state.url = url
+        ls_set("url", url)
+        st.session_state.token = token
+        ls_set("token", token)
+        st.session_state.project_uuid = project_uuid
+        ls_set("project_uuid", project_uuid)
 
-project_uuid = st.text_input(label="プロジェクトID", value=st.session_state.project_uuid)
-if project_uuid:
-    st.session_state.project_uuid = project_uuid
-    ls_set("project_uuid", project_uuid)
 
 st.write("session state")
 st.write(f"url: {st.session_state.url}")
