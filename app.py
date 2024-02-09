@@ -22,6 +22,10 @@ st.title("認証情報")
 # st.session_state.url = ls_get("url")
 # st.session_state.token = ls_get("token")
 # st.session_state.project_uuid = ls_get("project_uuid")
+st.session_state.url = None
+st.session_state.token = None
+st.session_state.project_uuid = None
+
 
 st.write(f"url: {st.session_state.url}")
 st.write(f"token: {st.session_state.token}")
