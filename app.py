@@ -1,5 +1,6 @@
 import streamlit as st
 from streamlit_local_storage import LocalStorage
+import pandas as pd
 
 ls = LocalStorage() 
 
@@ -17,7 +18,7 @@ def ls_set(item_key, item_value, key=None):
     ls.setItem(item_key, item_value, key=f"set_item_{item_key}" if (key is None) else key)
 
 
-st.title("認証情報")
+st.header("認証情報", divider=True)
 
 if ("url" not in st.session_state) or (st.session_state.url is None):
     st.session_state.url = ls_get("url")
@@ -40,3 +41,6 @@ if token:
 if project_uuid:
     st.session_state.project_uuid = project_uuid
     ls_set("project_uuid", project_uuid)
+
+st.sidebar.header("認証情報", devider=True)
+st.sidebar.table([["URL", "プロジェクト", "トークン"], [url, project_uuid, None if token is None else "*****"]])
