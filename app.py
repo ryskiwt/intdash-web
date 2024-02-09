@@ -8,6 +8,7 @@ def ls_get(item_key, key=None):
         return None
 
     item = ls.getItem(item_key, key=f"get_item_{item_key}" if (key is None) else key)
+    st.write(f"{item_key}: {item}")
     if (item is None) or ("storage" not in item) or (item["storage"] is None):
         return None
 
