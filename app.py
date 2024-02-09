@@ -19,7 +19,7 @@ def ls_set(item_key, item_value):
 
 st.title("認証情報")
 
-url_item = ls_get("url")
+url = ls_get("url")
 token = ls_get("token")
 project_uuid = ls_get("project_uuid")
 
