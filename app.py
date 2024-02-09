@@ -31,28 +31,29 @@ url = st.text_input(label="intdashサーバーURL", placeholder="https://example
 token = st.text_input(label="APIトークン", type="password", value=st.session_state.token)
 project_uuid = st.text_input(label="プロジェクトID", placeholder="00000000-0000-0000-0000-000000000000", value=st.session_state.project_uuid)
 
-st.session_state.url = url
-st.session_state.token = token
-st.session_state.project_uuid = project_uuid
-st.session_state.project_name = None
-
-ls_set("url", url)
-ls_set("token", token)
-ls_set("project_uuid", project_uuid)
-
 try:
     resp = requests.get(
         url=f"{url}/api/v1/projects/{project_uuid}",
         headers={"X-Intdash-Token": token},
     )
     resp.raise_for_status()
-    st.session_state.project_name = resp.json()["name"]
+    project_name = resp.json()["name"]
+
+    st.session_state.url = url
+    st.session_state.token = token
+    st.session_state.project_uuid = project_uuid
+    st.session_state.project_name = project_name
+
+    ls_set("url", url)
+    ls_set("token", token)
+    ls_set("project_uuid", project_uuid)
+    ls_set("project_name", project_name)
+
 except:
     st.error("入力に誤りがあります。")
 
-
-masked_token = None if st.session_state.token is None else "*****"
+masked_token = None if token is None else "*****"
 st.sidebar.markdown("# 認証情報")
-st.sidebar.markdown(f"- **サーバーURL**: {st.session_state.url}")
+st.sidebar.markdown(f"- **サーバーURL**: {url}")
 st.sidebar.markdown(f"- **APIトークン**: {masked_token}")
-st.sidebar.markdown(f"- **プロジェクト**: {st.session_state.project_name}")
+st.sidebar.markdown(f"- **プロジェクト**: {project_name}")
