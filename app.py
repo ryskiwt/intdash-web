@@ -1,6 +1,5 @@
 import streamlit as st
 from streamlit_javascript import st_javascript
-import requests
 
 def get_from_ls(k):
     return st_javascript(

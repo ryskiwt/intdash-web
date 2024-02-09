@@ -1,3 +1,5 @@
+import streamlit as st
+import requests
 
 if st.button("接続する"):
     
