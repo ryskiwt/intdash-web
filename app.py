@@ -41,7 +41,7 @@ ls_set("project_uuid", project_uuid)
 
 try:
     resp = requests.get(
-        url=f"{url}/api/v1/projects/{project_uuid}",
+        url=f"{url}/auth/projects/{project_uuid}",
         headers={"X-Intdash-Token": token},
     )
     resp.raise_for_status()
