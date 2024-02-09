@@ -5,9 +5,9 @@ ls = LocalStorage()
 
 st.title("認証情報")
 
-url = ls.getItem("url")
-token = ls.getItem("token")
-project_uuid = ls.getItem("project_uuid")
+url = ls.getItem("url", key="get_item_url")
+token = ls.getItem("token", key="get_item_token")
+project_uuid = ls.getItem("project_uuid", key="get_item_project_uuid")
 
 st.write(f"url: {url}")
 st.write(f"token: {token}")
