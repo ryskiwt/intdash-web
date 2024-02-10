@@ -40,6 +40,9 @@ def on_click(meas_uuid):
     st.session_state.measurements_meas_uuid = meas_uuid
     st.switch_page("pages/02_measurement.py")
 
+if st.button("hoge"):
+    st.switch_page("pages/02_measurement.py")
+
 with st.expander("検索条件", expanded=True):
     with st.container():
         col1, col2, col3 = st.columns(3)
@@ -148,7 +151,6 @@ if search:
             st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
             st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
             st.button("詳細をみる", key=f"詳細を見る_{i}", args=(meas_uuid,))
-            st.page_link("pages/02_measurement.py")
 
 parsed_url = urlparse(st.session_state.url)
 st.sidebar.markdown("## 認証情報")
