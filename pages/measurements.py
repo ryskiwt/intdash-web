@@ -9,13 +9,13 @@ with st.expander("検索条件", expanded=True):
         name = col1.text_input("計測名")
         uuid = col2.text_input("UUID")
 
-    with st.container()
+    with st.container():
         col1, col2, col3 = st.columns(3)
         start_date = col1.date_input("開始日時（日付）")
         start_time = col2.time_input("開始日時（時刻）", value=time(0, 0))
         start_frac = col3.number_input("開始日時（小数点以下）", min_value=0, max_value=999999999)
 
-    with st.container()
+    with st.container():
         col1, col2, col3 = st.columns(3)
         end_date = col1.date_input("終了日時（日付）")
         end_time = col2.time_input("終了日時（時刻）", value=time(0, 0))
