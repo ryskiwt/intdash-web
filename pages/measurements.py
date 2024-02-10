@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 from datetime import time, datetime, timezone
 from zoneinfo import ZoneInfo
+from urllib.parse import urlparse
 
 with st.expander("検索条件", expanded=True):
     with st.container():
