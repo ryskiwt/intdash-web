@@ -22,6 +22,7 @@ while True:
     resp = requests.get(
         url=f"{st.session_state.url}/api/auth/projects/{st.session_state.project_uuid}/edges",
         headers={"X-Intdash-Token": st.session_state.token},
+        params=params,
     )
     resp.raise_for_status()
     resp = resp.json()
