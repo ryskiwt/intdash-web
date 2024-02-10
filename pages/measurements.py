@@ -1,6 +1,7 @@
 import streamlit as st
 import requests
 from datetime import time
+from datetime import datetime
 
 uuid = st.text_input("UUID")
 name = st.text_input("計測名")
