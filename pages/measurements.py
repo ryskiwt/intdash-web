@@ -12,6 +12,27 @@ STATUS_MAP = {
     "completed": "完了",
 }
 
+EDGE_NAME_MAP = {}
+page = 1
+while True:
+    params = {
+        "page": page,
+        "per_page": 200,
+    }
+    resp = requests.get(
+        url=f"{st.session_state.url}/api/auth/projects/{st.session_state.project_uuid}/edges",
+        headers={"X-Intdash-Token": st.session_state.token},
+    )
+    resp.raise_for_status()
+    resp = resp.json()
+    for item in resp["items"]:
+        EDGE_NAME_MAP[item["edge_uuid"]] = item["name"]
+    
+    page += 1
+    if not resp["page"]["next"]:
+        break
+
+
 with st.expander("検索条件", expanded=True):
     with st.container():
         col1, col2, col3 = st.columns(3)
@@ -89,13 +110,7 @@ if search:
             hours += duration.days*24
 
             edge_uuid = item["edge_uuid"]
-            resp = requests.get(
-                url=f"{st.session_state.url}/api/auth/projects/{st.session_state.project_uuid}/edges/{edge_uuid}",
-                headers={"X-Intdash-Token": st.session_state.token},
-            )
-            resp.raise_for_status()
-            resp = resp.json()
-            edge_name = resp["name"]
+            edge_name = EDGE_NAME_MAP[edge_uuid]
 
             with st.container():
                 col1, col2 = st.columns(2)
