@@ -73,7 +73,7 @@ def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_
         params["name"] = meas_name
     if uuid is not None:
         params["uuid"] = meas_uuid
-    if edge_name_q is not None:
+    if edge_uuid is not None:
         params["edge_uuid"] = edge_uuid
 
     resp = requests.get(
@@ -132,7 +132,7 @@ with st.expander("検索条件", expanded=True):
         "end_frac": end_frac, 
         "meas_name": meas_name, 
         "meas_uuid": meas_uuid, 
-        "edge_uuid": edge_name_q["uuid"], 
+        "edge_uuid": None if edge_name_q is None else edge_name_q["uuid"], 
         "page": page,
         "limit": limit, 
     })
