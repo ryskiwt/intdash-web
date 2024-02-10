@@ -67,6 +67,20 @@ def dtf_to_query(d, t, f, tz):
     ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{f:09}Z'),
 
 def on_click_search():
+    st.session_state.page = 1
+    search()
+
+def on_click_prev():
+    st.session_state.page -= 1
+    if st.session_state.page < 1:
+        st.session_state.page = 1
+    search()
+
+def on_click_next():
+    st.session_state.page += 1
+    search()
+
+def search():
     params = {
         "start": dtf_to_query(
             st.session_state.conditions["start_date"],
@@ -177,19 +191,8 @@ with st.expander("検索結果", expanded=True):
     with st.container():
         col1, col2, col3 = st.columns(3)
         col1.write(f"{page} / {st.session_state.total_page} pages")
-        # col2.button("前のページ", on_click=on_click_search, kwargs={
-        #     "start_date": start_date, 
-        #     "start_time": start_time, 
-        #     "start_frac": start_frac, 
-        #     "end_date": end_date, 
-        #     "end_time": end_time, 
-        #     "end_frac": end_frac, 
-        #     "meas_name": meas_name, 
-        #     "meas_uuid": meas_uuid, 
-        #     "edge_uuid": None if edge_name_q is None else edge_name_q["uuid"], 
-        #     "limit": limit, 
-        # })
-        # col2.button("次のページ")
+        col2.button("前のページ", on_click=on_click_prev)
+        col2.button("次のページ", on_click=on_click_next)
 
     for i, item in enumerate(st.session_state.measurements):
         with st.container(border=True):
