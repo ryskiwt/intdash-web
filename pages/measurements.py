@@ -33,8 +33,7 @@ while True:
     page += 1
     if not resp["page"]["next"]:
         break
-
-PATTERN = re.compile(r'\b\w+\s+\(([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})\)')
+EDGE_UUID_MAP = {v:k for k,v in EDGE_NAME_MAP.items()}
 
 with st.expander("検索条件", expanded=True):
     with st.container():
@@ -54,7 +53,7 @@ with st.expander("検索条件", expanded=True):
         name = col1.text_input("計測名")
         uuid = col2.text_input("UUID")
     
-    edge_name_q = st.selectbox("エッジ名", sorted([f"{v} ({k})" for k,v in EDGE_NAME_MAP.items()]))
+    edge_name_q = st.selectbox("エッジ名", sorted([v for k,v in EDGE_NAME_MAP.items()]))
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
     page = st.number_input("ページ", value=1)
@@ -88,7 +87,7 @@ if search:
     if uuid is not None:
         params["uuid"] = uuid
     if edge_name_q is not None:
-        params["edge_uuid"] = PATTERN.findall(edge_name_q)[0]
+        params["edge_uuid"] = EDGE_UUID_MAP[edge_name_q]
 
     resp = requests.get(
         url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
