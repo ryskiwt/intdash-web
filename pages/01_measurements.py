@@ -192,12 +192,11 @@ def cropped_start_end(basetime, duration, tz):
     return start_time, end_time
 
 with st.expander("検索結果", expanded=True):
-    st.slider("ページ", label_visibility="hidden", min_value=1, max_value=st.session_state.total_page, value=st.session_state.page, on_change=on_change_slider, key="slider")
-    st.write(f"{st.session_state.page} / {st.session_state.total_page} ページ")
     with st.container():
-        col1, col2, col3 = st.columns([1, 1, 2])
+        col1, col2 = st.columns([1, 8])
         col1.button("< 前のページ", on_click=on_click_prev)
-        col3.button("次のページ >", on_click=on_click_next)
+        col2.button("次のページ >", on_click=on_click_next)
+    st.slider("ページ", label_visibility="hidden", min_value=1, max_value=st.session_state.total_page, value=st.session_state.page, on_change=on_change_slider, key="slider")
 
     for i, item in enumerate(st.session_state.measurements):
         with st.container(border=True):
