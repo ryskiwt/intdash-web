@@ -97,11 +97,11 @@ if search:
             st.write(f"[{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
 
             status_map = {
-                "ready": "計測準備中"
-                "measuring": "計測中"
-                "resending": "再送中"
-                "finished": "完了"
-                "completed": "完了"
+                "ready": "計測準備中",
+                "measuring": "計測中",
+                "resending": "再送中",
+                "finished": "完了",
+                "completed": "完了",
             }
             st.write(status_map[item["sequences"]["status"]])
 
