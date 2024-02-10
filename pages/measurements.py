@@ -51,6 +51,8 @@ with st.expander("検索条件", expanded=True):
         col1, col2 = st.columns(2)
         name = col1.text_input("計測名")
         uuid = col2.text_input("UUID")
+    
+    st.selectbox("エッジ名", [v for k,v in EDGE_NAME_MAP.items()])
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
     page = st.number_input("ページ", value=1)
