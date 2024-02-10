@@ -51,7 +51,7 @@ if st.button("検索する"):
         params["uuid"] = uuid
 
     resp = requests.get(
-        url=f"{url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
+        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
         headers={"X-Intdash-Token": st.session_state.token},
         params=params,
     )
