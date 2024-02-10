@@ -3,15 +3,25 @@ import requests
 from datetime import time, datetime, timezone
 from zoneinfo import ZoneInfo
 
-uuid = st.text_input("UUID")
-name = st.text_input("計測名")
-tz = st.text_input("タイムゾーン", "Asia/Tokyo")
-start_date = st.date_input("開始日時（日付）")
-start_time = st.time_input("開始日時（時刻）", value=time(0, 0))
-start_frac = st.number_input("開始日時（小数点以下）", min_value=0, max_value=999999999)
-end_date = st.date_input("終了日時（日付）")
-end_time = st.time_input("終了日時（時刻）", value=time(0, 0))
-end_frac = st.number_input("終了日時（小数点以下）", min_value=0, max_value=999999999)
+with st.expander("検索条件", expanded=True):
+    with st.container():
+        col1, col2 = st.columns(2)
+        name = col1.text_input("計測名")
+        uuid = col2.text_input("UUID")
+
+    with st.container()
+        col1, col2, col3 = st.columns(3)
+        start_date = col1.date_input("開始日時（日付）")
+        start_time = col2.time_input("開始日時（時刻）", value=time(0, 0))
+        start_frac = col3.number_input("開始日時（小数点以下）", min_value=0, max_value=999999999)
+
+    with st.container()
+        col1, col2, col3 = st.columns(3)
+        end_date = col1.date_input("終了日時（日付）")
+        end_time = col2.time_input("終了日時（時刻）", value=time(0, 0))
+        end_frac = col3.number_input("終了日時（小数点以下）", min_value=0, max_value=999999999)
+
+    tz = st.text_input("タイムゾーン", "Asia/Tokyo")
 
 start_rfc3339 = datetime(
     start_date.year,
@@ -22,6 +32,7 @@ start_rfc3339 = datetime(
     start_time.second,
     tzinfo=ZoneInfo(tz),
 ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
+
 end_rfc3339 = datetime(
     end_date.year,
     end_date.month,
@@ -31,8 +42,6 @@ end_rfc3339 = datetime(
     end_time.second,
     tzinfo=ZoneInfo(tz),
 ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
-st.write(start_rfc3339)
-st.write(end_rfc3339)
 
 if st.button("検索する"):
 
