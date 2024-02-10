@@ -1,24 +1,27 @@
 import streamlit as st
 import requests
 
-st.text_input("UUID")
-st.text_input("計測名")
-st.date_input("開始日時（日付）")
-st.time_input("開始日時（時刻）", value=None)
-st.number_input("開始日時（小数点以下）", min_value=0, max_value=999999999)
-st.date_input("終了日時（日付）")
-st.time_input("終了日時（時刻）", value=None)
-st.number_input("終了日時（小数点以下）", min_value=0, max_value=999999999)
+uuid = st.text_input("UUID")
+name = st.text_input("計測名")
+start_date = st.date_input("開始日時（日付）")
+start_time = st.time_input("開始日時（時刻）", value=None)
+start_frac = st.number_input("開始日時（小数点以下）", min_value=0, max_value=999999999)
+end_date = st.date_input("終了日時（日付）")
+end_time = st.time_input("終了日時（時刻）", value=None)
+end_frac = st.number_input("終了日時（小数点以下）", min_value=0, max_value=999999999)
 
 if st.button("検索する"):
-    
+    start_rfc3339 = datetime.combine(start_date, start_time).strftime(f'%Y-%m-%dT%H:%M:%S.{start_frac}%z')
+    end_rfc3339 = datetime.combine(end_date, end_time).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac}%z')
+
     resp = requests.get(
         url=f"{url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
         headers={"X-Intdash-Token": token},
         params={
-            "start": project_uuid,
-            "end": project_uuid,
-            "name": project_uuid,
+            "uuid": uuid,
+            "name": name,
+            "start": start_rfc3339,
+            "end": end_rfc3339,
         }
     )
     resp.raise_for_status()
