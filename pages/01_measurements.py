@@ -147,7 +147,7 @@ def td_to_human_readable_string(td):
 def cropped_start_end(basetime, duration, tz):
     splitted = basetime.split(".")
     start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
-    end_time = (start_time + duration).replace(microseconds=0)
+    end_time = (start_time + duration).replace(microsecond=0)
     return start_time, end_time
 
 with st.expander("検索結果", expanded=True):
