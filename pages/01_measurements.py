@@ -120,9 +120,9 @@ with st.expander("検索条件", expanded=True):
 
     limit = st.number_input("件数/ページ", value=10, min_value=1)
 
-    st.write(start_date)
-    st.write(start_time)
-    st.write(start_frac)
+    st.write(type(start_date))
+    st.write(type(start_time))
+    st.write(type(start_frac))
 
     st.button("検索する", on_click=on_click_search, kwargs={
         "start_date": start_date, 
