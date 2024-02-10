@@ -80,7 +80,7 @@ if search:
             tzinfo=ZoneInfo(tz),
         ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z'),
         "page": page,
-        "limit": 10,
+        "limit": 50,
     }
     if name is not None:
         params["name"] = name
