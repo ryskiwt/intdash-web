@@ -23,8 +23,10 @@ with st.expander("検索条件", expanded=True):
         uuid = col2.text_input("UUID")
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
+    page = st.number_input("ページ", value=1)
+    search = st.button("検索する"):
 
-if st.button("検索する"):
+if search:
     params = {
         "start": datetime(
             start_date.year,
@@ -44,6 +46,8 @@ if st.button("検索する"):
             end_time.second,
             tzinfo=ZoneInfo(tz),
         ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z'),
+        "page": page,
+        "limit": 10,
     }
     if name is not None:
         params["name"] = name
@@ -57,6 +61,9 @@ if st.button("検索する"):
     )
     resp.raise_for_status()
     resp = resp.json()
+
+    total_page = resp["page"]["total_count"]
+    st.write(f"{page} / {total_page} pages")
 
     for item in resp["items"]:
         with st.container(border=True):
