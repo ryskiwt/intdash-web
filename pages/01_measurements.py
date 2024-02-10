@@ -38,7 +38,7 @@ EDGE_UUID_MAP = {v:k for k,v in EDGE_NAME_MAP.items()}
 def on_click(meas_uuid):
     st.session_state.measurements_from_list = True
     st.session_state.measurements_meas_uuid = meas_uuid
-    st.switch_page("pages/measurement.py")
+    st.switch_page("pages/02_measurement.py")
 
 with st.expander("検索条件", expanded=True):
     with st.container():
