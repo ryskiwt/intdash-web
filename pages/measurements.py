@@ -58,14 +58,11 @@ if st.button("検索する"):
     resp.raise_for_status()
     resp = resp.json()
 
-    st.write(resp)
-
     for item in resp["items"]:
-        container = st.container(border=True)
-        with container:
+        with st.container(border=True):
             st.write(item["name"])
             st.write(item["uuid"])
-            st.write(item["base_time"])
+            st.write(item["basetime"])
             st.write(item["duration"])
             st.write(item["edge_uuid"])
             st.write(item)
