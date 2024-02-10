@@ -189,10 +189,10 @@ def cropped_start_end(basetime, duration, tz):
 
 with st.expander("検索結果", expanded=True):
     with st.container():
-        col1, col2, col3 = st.columns(3)
-        col1.write(f"{page} / {st.session_state.total_page} pages")
-        col2.button("前のページ", on_click=on_click_prev)
-        col2.button("次のページ", on_click=on_click_next)
+        col1, col2, col3 = st.columns([2,1,1])
+        col1.write(f"{st.session_state.page} / {st.session_state.total_page} pages")
+        col2.button("< 前のページ", on_click=on_click_prev)
+        col3.button("次のページ >", on_click=on_click_next)
 
     for i, item in enumerate(st.session_state.measurements):
         with st.container(border=True):
