@@ -21,7 +21,7 @@ start_rfc3339 = datetime(
     start_time.minute,
     start_time.second,
     tzinfo=ZoneInfo(timezone),
-).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
+).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
 end_rfc3339 = datetime(
     end_date.year,
     end_date.month,
