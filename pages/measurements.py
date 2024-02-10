@@ -102,10 +102,6 @@ if search:
                 col1.write(start_time.strftime("%Y/%m/%d %H:%M:%S") + " - " + end_time.strftime("%Y/%m/%d %H:%M:%S"))
                 col2.write(f"{hours} 時間 {minutes} 分 {seconds} 秒")
 
-            st.write(f"エッジ名: [{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
-            st.write(f"計測名: [{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
-
-
             with st.container():
                 col1, col2 = st.columns(2)
                 col1.write("ステータス: " + STATUS_MAP[item["sequences"]["status"]])
@@ -119,6 +115,10 @@ if search:
                     col2.write(f"{received_chunks_ratio:3.1f} % ({received_data_points} / {expected_data_points} points)")
                 else:
                     col2.write(f"{processed_ratio:3.1f} % (iSCPv1)")
+
+            st.write(f"エッジ名: [{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
+            st.write(f"計測名: [{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
+
 
 
 parsed_url = urlparse(st.session_state.url)
