@@ -69,7 +69,7 @@ if search:
         with st.container(border=True):
             meas_name = item["name"]
             meas_uuid = item["uuid"]
-            duration = timedelta(microseconds=item["duration"])
+            duration = timedelta(microseconds=item["max_elapsed_time"])
 
             splitted = item["basetime"].split(".")
             start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
@@ -94,7 +94,17 @@ if search:
             resp = resp.json()
             edge_name = resp["name"]
             st.write(f"[{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
-            st.markdown(f"[{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
+            st.write(f"[{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
+
+            status_map = {
+                "ready": "計測準備中"
+                "measuring": "計測中"
+                "resending": "再送中"
+                "finished": "完了"
+                "completed": "完了"
+            }
+            st.write(status_map[item["sequences"]["status"]])
+
 
             st.write(item)
 
