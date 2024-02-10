@@ -58,7 +58,7 @@ if st.button("検索する"):
     resp.raise_for_status()
     items = resp.json()
 
-    wt.write(items)
+    st.write(items)
 
     for item in items:
         container = st.container(border=True)
