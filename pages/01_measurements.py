@@ -92,12 +92,13 @@ with st.expander("検索条件", expanded=True):
     def craete_datetime_input(label):
         with st.container():
             col1, col2, col3 = st.columns(3)
-            start_date = col1.date_input(label=f"{label}（日付）")
-            start_time = col2.time_input(label=f"{label}（時刻）", value=time(0, 0))
-            start_frac = col3.number_input(label=f"{label}（小数点以下）", min_value=0, max_value=999999999)
+            d = col1.date_input(label=f"{label}（日付）")
+            t = col2.time_input(label=f"{label}（時刻）", value=time(0, 0))
+            f = col3.number_input(label=f"{label}（小数点以下）", min_value=0, max_value=999999999)
+        return d, t, f
 
-    craete_datetime_input(label="開始日時")
-    craete_datetime_input(label="終了日時")
+    start_date, start_time, start_frac = craete_datetime_input(label="開始日時")
+    end_date, end_time, end_frac = craete_datetime_input(label="終了日時")
 
     with st.container():
         col1, col2 = st.columns(2)
