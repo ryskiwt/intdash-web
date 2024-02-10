@@ -59,7 +59,8 @@ with st.expander("検索条件", expanded=True):
     page = st.number_input("ページ", value=1, min_value=1)
     search = st.button("検索する")
 
-st.session_state.checked_measurements = set()
+if "checked_measurements" not in st.session_state:
+    st.session_state.checked_measurements = set()
 
 with st.expander("検索結果", expanded=True):
     if search:
