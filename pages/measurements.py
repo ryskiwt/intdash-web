@@ -146,7 +146,7 @@ if search:
             if st.button("詳細をみる", key=f"詳細を見る_{i}"):
                 st.session_state.measurements_from_list = True
                 st.session_state.measurements_meas_uuid = meas_uuid
-                st.switch_page(f"pages/measurement.py")
+                st.switch_page("pages/measurement.py")
 
 parsed_url = urlparse(st.session_state.url)
 st.sidebar.markdown("## 認証情報")
