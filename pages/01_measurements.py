@@ -35,11 +35,6 @@ while True:
         break
 EDGE_UUID_MAP = {v:k for k,v in EDGE_NAME_MAP.items()}
 
-def on_click(meas_uuid):
-    st.session_state.measurements_from_list = True
-    st.session_state.measurements_meas_uuid = meas_uuid
-    st.switch_page("pages/02_measurement.py")
-
 with st.expander("検索条件", expanded=True):
     with st.container():
         col1, col2, col3 = st.columns(3)
@@ -147,7 +142,11 @@ if search:
 
             st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
             st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
-            st.button("詳細をみる", key=f"詳細を見る_{i}", on_click=on_click, args=(meas_uuid,))
+            if st.button("詳細をみる", key=f"詳細を見る_{i}"):
+                st.session_state.measurements_from_list = True
+                st.session_state.measurements_meas_uuid = meas_uuid
+                st.switch_page("pages/02_measurement.py")
+
 
 parsed_url = urlparse(st.session_state.url)
 st.sidebar.markdown("## 認証情報")
