@@ -69,9 +69,9 @@ def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_
         "page": page,
         "limit": limit,
     }
-    if name is not None:
+    if meas_name is not None:
         params["name"] = meas_name
-    if uuid is not None:
+    if meas_uuid is not None:
         params["uuid"] = meas_uuid
     if edge_uuid is not None:
         params["edge_uuid"] = edge_uuid
