@@ -87,7 +87,7 @@ def on_click_search():
         params["name"] = st.session_state.conditions["limit"]
     if st.session_state.conditions["meas_uuid"] is not None:
         params["uuid"] = st.session_state.conditions["meas_uuid"]
-    if st.session_state.conditions["edge_uuid"] is not None:
+    if st.session_state.conditions["edge_info"] is not None:
         params["edge_uuid"] = st.session_state.conditions["edge_info"]["uuid"]
 
     resp = requests.get(
