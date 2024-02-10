@@ -103,6 +103,7 @@ if search:
     for item in resp["items"]:
         with st.container(border=True):
             meas_name = item["name"]
+            meas_name = "-- 名称なし --" if meas_name=="" else meas_name
             meas_uuid = item["uuid"]
             duration = timedelta(microseconds=item["max_elapsed_time"])
 
