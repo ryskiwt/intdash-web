@@ -53,7 +53,7 @@ with st.expander("検索条件", expanded=True):
         name = col1.text_input("計測名")
         uuid = col2.text_input("UUID")
     
-    edge_name_q = st.selectbox("エッジ名", sorted([v for k,v in EDGE_NAME_MAP.items()]))
+    edge_name_q = st.selectbox("エッジ名", [{"name": k, "uuid": v} for k,v in EDGE_NAME_MAP.items()], key="name", index=None)
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
     page = st.number_input("ページ", value=1)
@@ -87,7 +87,7 @@ if search:
     if uuid is not None:
         params["uuid"] = uuid
     if edge_name_q is not None:
-        params["edge_uuid"] = EDGE_UUID_MAP[edge_name_q]
+        params["edge_uuid"] = edge_name_q["uuid"]
 
     resp = requests.get(
         url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
