@@ -13,7 +13,7 @@ end_date = st.date_input("終了日時（日付）")
 end_time = st.time_input("終了日時（時刻）", value=time(0, 0))
 end_frac = st.number_input("終了日時（小数点以下）", min_value=0, max_value=999999999)
 
-start_rfc3339 = datetime.datetime(
+start_rfc3339 = datetime(
     start_date.year,
     start_date.month,
     start_date.day,
@@ -22,7 +22,7 @@ start_rfc3339 = datetime.datetime(
     start_time.second,
     timezone=ZoneInfo(timezone),
 ).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
-end_rfc3339 = datetime.datetime(
+end_rfc3339 = datetime(
     end_date.year,
     end_date.month,
     end_date.day,
