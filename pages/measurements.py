@@ -13,6 +13,8 @@ end_frac = st.number_input("終了日時（小数点以下）", min_value=0, max
 if st.button("検索する"):
     start_rfc3339 = datetime.combine(start_date, start_time).strftime(f'%Y-%m-%dT%H:%M:%S.{start_frac}%z')
     end_rfc3339 = datetime.combine(end_date, end_time).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac}%z')
+    st.write(start_rfc3339)
+    st.write(end_rfc3339)
 
     resp = requests.get(
         url=f"{url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
