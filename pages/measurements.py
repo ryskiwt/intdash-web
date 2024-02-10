@@ -143,7 +143,7 @@ if search:
             st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
             st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
 
-            if st.button("詳細をみる", key="詳細を見る_{i}"):
+            if st.button("詳細をみる", key=f"詳細を見る_{i}"):
                 st.session_state.measurements_from_list = True
                 st.session_state.measurements_meas_uuid = meas_uuid
                 st.switch_page(f"pages/measurement.py")
