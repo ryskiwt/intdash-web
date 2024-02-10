@@ -23,37 +23,36 @@ with st.expander("検索条件", expanded=True):
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
 
-start_rfc3339 = datetime(
-    start_date.year,
-    start_date.month,
-    start_date.day,
-    start_time.hour,
-    start_time.minute,
-    start_time.second,
-    tzinfo=ZoneInfo(tz),
-).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
-
-end_rfc3339 = datetime(
-    end_date.year,
-    end_date.month,
-    end_date.day,
-    end_time.hour,
-    end_time.minute,
-    end_time.second,
-    tzinfo=ZoneInfo(tz),
-).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
-
 if st.button("検索する"):
+    params = {
+        "start": datetime(
+            start_date.year,
+            start_date.month,
+            start_date.day,
+            start_time.hour,
+            start_time.minute,
+            start_time.second,
+            tzinfo=ZoneInfo(tz),
+        ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z'),
+        "end": datetime(
+            end_date.year,
+            end_date.month,
+            end_date.day,
+            end_time.hour,
+            end_time.minute,
+            end_time.second,
+            tzinfo=ZoneInfo(tz),
+        ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z'),
+    }
+    if name is not None:
+        params["name"] = name
+    if uuid is not None:
+        params["uuid"] = uuid
 
     resp = requests.get(
         url=f"{url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
         headers={"X-Intdash-Token": token},
-        params={
-            "uuid": uuid,
-            "name": name,
-            "start": start_rfc3339,
-            "end": end_rfc3339,
-        }
+        params=params,
     )
     resp.raise_for_status()
     items = resp.json()
