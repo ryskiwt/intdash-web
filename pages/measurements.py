@@ -142,8 +142,7 @@ if search:
 
             st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
             st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
-
-
+            st.write(f"https://intdash-web-test.streamlit.app/measurement?uuid={meas_uuid}")
 
 parsed_url = urlparse(st.session_state.url)
 st.sidebar.markdown("## 認証情報")
