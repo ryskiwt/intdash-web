@@ -5,11 +5,6 @@ from zoneinfo import ZoneInfo
 
 with st.expander("検索条件", expanded=True):
     with st.container():
-        col1, col2 = st.columns(2)
-        name = col1.text_input("計測名")
-        uuid = col2.text_input("UUID")
-
-    with st.container():
         col1, col2, col3 = st.columns(3)
         start_date = col1.date_input("開始日時（日付）")
         start_time = col2.time_input("開始日時（時刻）", value=time(0, 0))
@@ -20,6 +15,11 @@ with st.expander("検索条件", expanded=True):
         end_date = col1.date_input("終了日時（日付）")
         end_time = col2.time_input("終了日時（時刻）", value=time(0, 0))
         end_frac = col3.number_input("終了日時（小数点以下）", min_value=0, max_value=999999999)
+
+    with st.container():
+        col1, col2 = st.columns(2)
+        name = col1.text_input("計測名")
+        uuid = col2.text_input("UUID")
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
 
@@ -51,7 +51,7 @@ if st.button("検索する"):
 
     resp = requests.get(
         url=f"{url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
-        headers={"X-Intdash-Token": token},
+        headers={"X-Intdash-Token": st.session_state.token},
         params=params,
     )
     resp.raise_for_status()
@@ -68,3 +68,8 @@ if st.button("検索する"):
             st.write(item)
 
 
+parsed_url = urlparse(st.session_state.url)
+st.sidebar.markdown("## 認証情報")
+st.sidebar.markdown(f"**サーバー:** [{parsed_url.hostname}]({st.session_state.url}/console/projects/{st.session_state.project_uuid})")
+st.sidebar.write("**プロジェクト:**", st.session_state.project_name)
+st.sidebar.write("**ユーザー:**", st.session_state.user_display_name)
