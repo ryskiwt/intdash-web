@@ -144,10 +144,13 @@ with st.expander("検索結果", expanded=True):
 
                 st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
                 st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
-                if st.checkbox("この計測を対象にする", key=f"checkbox_{i}", value=meas_uuid in st.session_state.checked_measurements):
+
+                checked = meas_uuid in st.session_state.checked_measurements
+                if st.checkbox("この計測を対象にする", key=f"checkbox_{i}", value=checked):
                     st.session_state.checked_measurements.add(meas_uuid)
                 else:
-                    st.session_state.checked_measurements.remove(meas_uuid)
+                    if not checked:
+                        st.session_state.checked_measurements.remove(meas_uuid)
 
 st.write(st.session_state.checked_measurements)
 
