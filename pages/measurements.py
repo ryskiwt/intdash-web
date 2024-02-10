@@ -20,7 +20,7 @@ start_rfc3339 = datetime(
     start_time.hour,
     start_time.minute,
     start_time.second,
-    timezone=ZoneInfo(timezone),
+    tzinfo=ZoneInfo(timezone),
 ).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
 end_rfc3339 = datetime(
     end_date.year,
@@ -29,7 +29,7 @@ end_rfc3339 = datetime(
     end_time.hour,
     end_time.minute,
     end_time.second,
-    timezone=ZoneInfo(timezone),
+    tzinfo=ZoneInfo(timezone),
 ).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
 st.write(start_rfc3339)
 st.write(end_rfc3339)
