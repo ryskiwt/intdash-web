@@ -13,7 +13,7 @@ STATUS_MAP = {
     "completed": "完了",
 }
 
-EDGE_NAME_MAP = {}
+EDGE_NAME_MAP = set()
 page = 1
 while True:
     params = {
@@ -58,6 +58,8 @@ with st.expander("検索条件", expanded=True):
     tz = st.selectbox("タイムゾーン", pytz.common_timezones, index=pytz.common_timezones.index("Asia/Tokyo"))
     page = st.number_input("ページ", value=1, min_value=1)
     search = st.button("検索する")
+
+st.session_state.checked_measurements = []
 
 with st.expander("検索結果", expanded=True):
     if search:
@@ -142,6 +144,13 @@ with st.expander("検索結果", expanded=True):
 
                 st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
                 st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
+                if st.checkbox("この計測を対象にする", value=meas_uuid in st.session_state.checked_measurements):
+                    st.session_state.checked_measurements.add(meas_uuid)
+                else:
+                    st.session_state.checked_measurements.remove(meas_uuid)
+
+st.write(st.session_state.checked_measurements)
+
 
 
 
