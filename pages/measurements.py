@@ -93,8 +93,7 @@ if search:
             resp.raise_for_status()
             resp = resp.json()
             edge_name = resp["name"]
-            st.write(f"{edge_name} ({edge_uuid})")
-
+            st.write(f"[{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
             st.markdown(f"[{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
 
             st.write(item)
