@@ -1,8 +1,11 @@
 import streamlit as st
 import requests
 
-query_params = st.query_params.to_dict()
-meas_uuid = query_params["uuid"]
+meas_uuid = None
+if st.session_state.measurements_from_list:
+    meas_uuid = st.session_state.measurements_meas_uuid = meas_uuid
+    st.session_state.measurements_from_list = False
+meas_uuid = st.text_input("計測UUID", value=meas_uuid)
 
 params = {
     "name": meas_uuid
