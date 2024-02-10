@@ -60,6 +60,7 @@ with st.expander("検索条件", expanded=True):
     search = st.button("検索する")
 
 if search:
+    limit = 50
     params = {
         "start": datetime(
             start_date.year,
@@ -80,7 +81,7 @@ if search:
             tzinfo=ZoneInfo(tz),
         ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z'),
         "page": page,
-        "limit": 50,
+        "limit": limit,
     }
     if name is not None:
         params["name"] = name
@@ -97,7 +98,7 @@ if search:
     resp.raise_for_status()
     resp = resp.json()
 
-    total_page = resp["page"]["total_count"]
+    total_page = -((-resp["page"]["total_count"])//limit)
     st.write(f"{page} / {total_page} pages")
 
     for item in resp["items"]:
