@@ -55,7 +55,7 @@ with st.expander("検索条件", expanded=True):
     
     edge_name_q = st.selectbox("エッジ名", [{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()], format_func=lambda item: item["name"], index=None)
 
-    tz = st.selectbox("タイムゾーン", pytz.common_timezones, index="Asia/Tokyo")
+    tz = st.selectbox("タイムゾーン", pytz.common_timezones, index=pytz.common_timezones.index("Asia/Tokyo"))
     page = st.number_input("ページ", value=1)
     search = st.button("検索する")
 
