@@ -156,7 +156,7 @@ with st.expander("検索条件", expanded=True):
         index=pytz.common_timezones.index(st.session_state.conditions["timezone"]),
     )
 
-    limit = st.number_input("件数/ページ", min_value=1, value=st.session_state.conditions["limit"])
+    limit = st.number_input("ページごとの件数", min_value=1, value=st.session_state.conditions["limit"])
 
     st.session_state.conditions = {
         "start_date": start_date,
@@ -188,10 +188,11 @@ def cropped_start_end(basetime, duration, tz):
     return start_time, end_time
 
 with st.expander("検索結果", expanded=True):
+    st.write(f"{st.session_state.page} / {st.session_state.total_page} ページ")
     with st.container():
-        col1, col2, col3 = st.columns([2,1,1])
-        col1.write(f"{st.session_state.page} / {st.session_state.total_page} pages")
-        col2.button("< 前のページ", on_click=on_click_prev)
+        col1, col2, col3 = st.columns([1, 4, 1])
+        col1.button("< 前のページ", on_click=on_click_prev)
+        st.session_state.page = col2.slider("ページ", min_value=2, max_value=st.session_state.total_page, value=st.session_state.page, on_change=search)
         col3.button("次のページ >", on_click=on_click_next)
 
     for i, item in enumerate(st.session_state.measurements):
