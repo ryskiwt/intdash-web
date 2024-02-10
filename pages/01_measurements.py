@@ -191,7 +191,7 @@ with st.expander("検索結果", expanded=True):
     with st.container():
         col1, col2, col3 = st.columns([1, 2, 1])
         col1.button("< 前のページ", on_click=on_click_prev)
-        st.session_state.page = col2.slider("ページ", label_visibility=False, min_value=1, max_value=st.session_state.total_page, value=st.session_state.page, on_change=search)
+        st.session_state.page = col2.slider("ページ", label_visibility="hidden", min_value=1, max_value=st.session_state.total_page, value=st.session_state.page, on_change=search)
         col3.button("次のページ >", on_click=on_click_next)
 
     for i, item in enumerate(st.session_state.measurements):
