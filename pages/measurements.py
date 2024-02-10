@@ -105,6 +105,11 @@ if search:
             }
             st.write(status_map[item["sequences"]["status"]])
 
+            received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
+            received_data_points = item["sequences"]["received_data_points"]
+            expected_data_points = item["sequences"]["expected_data_points"]
+            st.write(f"{received_chunks_ratio:.1f} % ({received_data_points} / {expected_data_points} points)")
+
 
             st.write(item)
 
