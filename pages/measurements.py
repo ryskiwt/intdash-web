@@ -105,17 +105,15 @@ if search:
             st.write(f"エッジ名: [{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
             st.write(f"計測名: [{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
 
-            with st.container():
-                col1, col2, col3 = st.columns(3)
-                col1.write(STATUS_MAP[item["sequences"]["status"]])
+            st.write("ステータス: " + STATUS_MAP[item["sequences"]["status"]])
 
-                received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
-                received_data_points = item["sequences"]["received_data_points"]
-                expected_data_points = item["sequences"]["expected_data_points"]
-                col2.write(f"{received_chunks_ratio:.1f} % ({received_data_points} / {expected_data_points} points)")
+            received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
+            received_data_points = item["sequences"]["received_data_points"]
+            expected_data_points = item["sequences"]["expected_data_points"]
+            st.write(f"チャンク回収率(v2): {received_chunks_ratio:3.1f} % ({received_data_points} / {expected_data_points} points)")
 
-                processed_ratio = item["processed_ratio"]
-                col3.write(f"{processed_ratio:.1f} %")
+            processed_ratio = item["processed_ratio"] * 100.0
+            st.write(f"セクション回収率(v1): {processed_ratio:3.1f} %")
 
 
 parsed_url = urlparse(st.session_state.url)
