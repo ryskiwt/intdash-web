@@ -42,7 +42,7 @@ def declare_variable(name, default):
 
 declare_variable("measurements", [])
 declare_variable("total_page", 0)
-declare_variable("checked_measurement_uuids", [])
+declare_variable("checked_measurement_uuids", set())
 
 
 def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_frac, meas_name, meas_uuid, edge_uuid, page, limit):
