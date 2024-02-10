@@ -1,8 +1,9 @@
 import streamlit as st
 import requests
-from datetime import time, datetime, timezone
+from datetime import time, datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
+import human_readable
 
 with st.expander("検索条件", expanded=True):
     with st.container():
@@ -67,11 +68,11 @@ if search:
 
     for item in resp["items"]:
         with st.container(border=True):
-            st.write(item["name"])
-            st.write(item["uuid"])
-            st.write(item["basetime"])
-            st.write(item["duration"])
-            st.write(item["edge_uuid"])
+            splitted = item["basetime"].split(".")
+            bt = datetime(splitted[0]+"Z").astimezone(ZoneInfo(tz))
+            st.write(bt)
+
+            st.write(human_readable.precise_delta(timedelta(microseconds=item["duration"]), suppress=["days"], minimum_unit="microseconds"))
             st.write(item)
 
 
