@@ -115,7 +115,7 @@ if search:
                 expected_data_points = item["sequences"]["expected_data_points"]
                 processed_ratio = item["processed_ratio"] * 100.0
 
-                if received_chunks_ratio <= expected_data_points:
+                if received_data_points <= expected_data_points:
                     col2.write(f"{received_chunks_ratio:3.1f} % ({received_data_points} / {expected_data_points} points)")
                 else:
                     col2.write(f"{processed_ratio:3.1f} % (iSCPv1)")
