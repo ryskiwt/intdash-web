@@ -56,11 +56,11 @@ if st.button("検索する"):
         params=params,
     )
     resp.raise_for_status()
-    items = resp.json()
+    resp = resp.json()
 
-    st.write(items)
+    st.write(resp)
 
-    for item in items:
+    for item in resp["items"]:
         container = st.container(border=True)
         with container:
             st.write(item["name"])
