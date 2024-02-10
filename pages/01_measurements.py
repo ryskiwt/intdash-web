@@ -149,7 +149,7 @@ with st.expander("検索結果", expanded=True):
                 if st.checkbox("この計測を対象にする", key=f"checkbox_{i}", value=checked):
                     st.session_state.checked_measurements.add(meas_uuid)
                 else:
-                    if not checked:
+                    if checked:
                         st.session_state.checked_measurements.remove(meas_uuid)
 
 st.write(st.session_state.checked_measurements)
