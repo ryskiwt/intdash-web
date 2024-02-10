@@ -27,7 +27,7 @@ while True:
     resp = resp.json()
     for item in resp["items"]:
         EDGE_NAME_MAP[item["edge_uuid"]] = item["name"]
-    
+    st.write(page)
     page += 1
     if not resp["page"]["next"]:
         break
