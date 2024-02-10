@@ -111,9 +111,6 @@ if search:
             st.write(f"{received_chunks_ratio:.1f} % ({received_data_points} / {expected_data_points} points)")
 
 
-            st.write(item)
-
-
 parsed_url = urlparse(st.session_state.url)
 st.sidebar.markdown("## 認証情報")
 st.sidebar.markdown(f"**サーバー:** [{parsed_url.hostname}]({st.session_state.url}/console/projects/{st.session_state.project_uuid})")
