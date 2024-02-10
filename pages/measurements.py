@@ -73,8 +73,7 @@ if search:
 
             splitted = item["basetime"].split(".")
             start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
-            end_time = start_time + duration
-            end_time.microseconds = 0
+            end_time = (start_time + duration).replace(microsecond=0)
 
             st.write(start_time)
             st.write(end_time)
