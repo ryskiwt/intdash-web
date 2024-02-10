@@ -40,7 +40,7 @@ def on_click(meas_uuid):
     st.session_state.measurements_meas_uuid = meas_uuid
     st.switch_page("pages/02_measurement.py")
 
-st.button("hoge", on_click=on_click, args=(meas_uuid="hoge",))
+st.button("hoge", on_click=on_click, args=("hoge",))
 
 with st.expander("検索条件", expanded=True):
     with st.container():
