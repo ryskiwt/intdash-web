@@ -46,7 +46,6 @@ declare_variable("checked_measurement_uuids", [])
 
 
 def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_frac, meas_name, meas_uuid, edge_uuid, page, limit):
-    limit = 50
     params = {
         "start": datetime(
             start_date.year,
