@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-from datetime import time, datetime, timezone, timedelta
+from datetime import date, time, datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
 import pytz
@@ -19,6 +19,7 @@ while True:
     params = {
         "page": page,
         "per_page": 200,
+        "sort": "nickname",
     }
     resp = requests.get(
         url=f"{st.session_state.url}/api/auth/projects/{st.session_state.project_uuid}/edges",
@@ -41,40 +42,53 @@ def declare_variable(name, default):
         st.session_state[name] = default
 
 declare_variable("measurements", [])
+declare_variable("conditions", {
+    "start_date": date(),
+    "start_time": time(0, 0),
+    "start_frac": 0,
+    "end_date": date(),
+    "end_time": time(0, 0),
+    "end_frac": 0,
+    "meas_name": None, 
+    "meas_uuid": None, 
+    "edge_info": None, 
+    "timezone": "Asia/Tokyo",
+    "limit": 10, 
+})
 declare_variable("page", 1)
 declare_variable("total_page", 0)
 declare_variable("checked_measurement_uuids", set())
 
+def dtf_to_query(d, t, f, tz):
+    return datetime(
+        d.year, d.month, d.day,
+        t.hour, t.minute, t.second,
+        tzinfo=ZoneInfo(tz),
+    ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{f:09}Z'),
 
-def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_frac, meas_name, meas_uuid, edge_uuid, limit):
+def on_click_search():
     params = {
-        "start": datetime(
-            start_date.year,
-            start_date.month,
-            start_date.day,
-            start_time.hour,
-            start_time.minute,
-            start_time.second,
-            tzinfo=ZoneInfo(tz),
-        ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{start_frac:09}Z'),
-        "end": datetime(
-            end_date.year,
-            end_date.month,
-            end_date.day,
-            end_time.hour,
-            end_time.minute,
-            end_time.second,
-            tzinfo=ZoneInfo(tz),
-        ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z'),
+        "start": dtf_to_query(
+            st.session_state.conditions["start_date"],
+            st.session_state.conditions["start_time"],
+            st.session_state.conditions["start_frac"],
+            st.session_state.conditions["timezone"],
+        ),
+        "end": dtf_to_query(
+            st.session_state.conditions["end_date"],
+            st.session_state.conditions["end_time"],
+            st.session_state.conditions["end_frac"],
+            st.session_state.conditions["timezone"],
+        ),
+        "limit": st.session_state.conditions["limit"],
         "page": st.session_state.page,
-        "limit": limit,
     }
-    if meas_name is not None:
-        params["name"] = meas_name
-    if meas_uuid is not None:
-        params["uuid"] = meas_uuid
-    if edge_uuid is not None:
-        params["edge_uuid"] = edge_uuid
+    if st.session_state.conditions["meas_name"] is not None:
+        params["name"] = st.session_state.conditions["limit"]
+    if st.session_state.conditions["meas_uuid"] is not None:
+        params["uuid"] = st.session_state.conditions["meas_uuid"]
+    if st.session_state.conditions["edge_uuid"] is not None:
+        params["edge_uuid"] = st.session_state.conditions["edge_info"]["uuid"]
 
     resp = requests.get(
         url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
@@ -84,58 +98,67 @@ def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_
     resp.raise_for_status()
     resp = resp.json()
 
-    st.session_state.total_page = -((-resp["page"]["total_count"])//limit)
+    st.session_state.total_page = -((-resp["page"]["total_count"])//st.session_state.conditions["limit"])
     st.session_state.measurements = resp["items"]
 
 
 with st.expander("検索条件", expanded=True):
-    def craete_datetime_input(label):
+    def craete_datetime_input(label, date_value, time_value, frac_value):
         with st.container():
             col1, col2, col3 = st.columns(3)
-            d = col1.date_input(label=f"{label}（日付）")
-            t = col2.time_input(label=f"{label}（時刻）", value=time(0, 0))
-            f = col3.number_input(label=f"{label}（小数点以下）", min_value=0, max_value=999999999)
+            d = col1.date_input(label=f"{label}（日付）", value=date_value)
+            t = col2.time_input(label=f"{label}（時刻）", value=time_value)
+            f = col3.number_input(label=f"{label}（小数点以下）", value=frac_value, min_value=0, max_value=999999999)
         return d, t, f
 
-    start_date, start_time, start_frac = craete_datetime_input(label="開始日時")
-    end_date, end_time, end_frac = craete_datetime_input(label="終了日時")
+    start_date, start_time, start_frac = craete_datetime_input(
+        label="開始日時",
+        date_value=st.session_state.conditions["start_date"],
+        time_value=st.session_state.conditions["start_time"],
+        frac_value=st.session_state.conditions["start_frac"],
+    )
+    end_date, end_time, end_frac = craete_datetime_input(
+        label="終了日時",
+        date_value=st.session_state.conditions["end_date"],
+        time_value=st.session_state.conditions["end_time"],
+        frac_value=st.session_state.conditions["end_frac"],
+    )
 
     with st.container():
         col1, col2 = st.columns(2)
-        meas_name = col1.text_input(label="計測名", placeholder="Optional")
-        meas_uuid = col2.text_input(label="UUID", placeholder="Optional")
+        meas_name = col1.text_input(label="計測名", placeholder="Optional", value=st.session_state.conditions["meas_name"])
+        meas_uuid = col2.text_input(label="UUID", placeholder="Optional", value=st.session_state.conditions["meas_uuid"])
     
-    edge_name_q = st.selectbox(
+    edge_info = st.selectbox(
         label="エッジ名",
         options=[{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()],
         format_func=lambda item: item["name"],
-        index=None,
+        index=None if st.session_state.conditions["edge_info"] is None else EDGE_NAME_MAP.keys().index(st.session_state.conditions["edge_info"]["uuid"]),
     )
     
     tz = st.selectbox(
         label="タイムゾーン",
         options=pytz.common_timezones,
-        index=pytz.common_timezones.index("Asia/Tokyo"),
+        index=pytz.common_timezones.index(st.session_state.conditions["timezone"]),
     )
 
-    limit = st.number_input("件数/ページ", value=10, min_value=1)
+    limit = st.number_input("件数/ページ", min_value=1, value=st.session_state.conditions["limit"])
 
-    st.write(type(start_date))
-    st.write(type(start_time))
-    st.write(type(start_frac))
-
-    st.button("検索する", on_click=on_click_search, kwargs={
-        "start_date": start_date, 
-        "start_time": start_time, 
-        "start_frac": start_frac, 
-        "end_date": end_date, 
-        "end_time": end_time, 
-        "end_frac": end_frac, 
+    st.session_state.conditions = {
+        "start_date": start_date,
+        "start_time": start_time,
+        "start_frac": start_frac,
+        "end_date": end_date,
+        "end_time": end_time,
+        "end_frac": end_frac,
         "meas_name": meas_name, 
         "meas_uuid": meas_uuid, 
-        "edge_uuid": None if edge_name_q is None else edge_name_q["uuid"], 
+        "edge_info": edge_info, 
+        "timezone": tz,
         "limit": limit, 
-    })
+    }
+
+    st.button("検索する", on_click=on_click_search)
 
 def td_to_human_readable_string(td):
     hours = td.seconds // 3600
