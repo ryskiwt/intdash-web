@@ -137,31 +137,36 @@ with st.expander("検索条件", expanded=True):
         "limit": limit, 
     })
 
+def td_to_human_readable_string(td):
+    hours = td.seconds // 3600
+    minutes = (td.seconds - hours*3600) // 60
+    seconds = td.seconds - hours*3600 - minutes*60
+    hours += td.days*24
+    return f"{hours} 時間 {minutes} 分 {seconds} 秒"
+
+def cropped_start_end(basetime, duration, tz):
+    splitted = basetime.split(".")
+    start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
+    end_time = (start_time + duration).replace(microseconds=0)
+    return start_time, end_time
+
 with st.expander("検索結果", expanded=True):
     st.write(f"{page} / {st.session_state.total_page} pages")
 
     for i, item in enumerate(st.session_state.measurements):
         with st.container(border=True):
-            meas_name = "<名称なし>" if item["name"]=="" else item["name"]
             meas_uuid = item["uuid"]
-            duration = timedelta(microseconds=item["max_elapsed_time"])
-
-            splitted = item["basetime"].split(".")
-            start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
-            end_time = (start_time + duration)
-
-            hours = duration.seconds // 3600
-            minutes = (duration.seconds - hours*3600) // 60
-            seconds = duration.seconds - hours*3600 - minutes*60
-            hours += duration.days*24
-
+            meas_name = "<名称なし>" if item["name"]=="" else item["name"]
             edge_uuid = item["edge_uuid"]
             edge_name = EDGE_NAME_MAP[edge_uuid]
 
             with st.container():
+                duration = timedelta(microseconds=item["max_elapsed_time"])
+                start_time, end_time = cropped_start_end(item["basetime"], duration, tz)
+
                 col1, col2 = st.columns(2)
                 col1.write(start_time.strftime("%Y/%m/%d %H:%M:%S") + " - " + end_time.strftime("%Y/%m/%d %H:%M:%S"))
-                col2.write(f"{hours} 時間 {minutes} 分 {seconds} 秒")
+                col2.write(td_to_human_readable_string(duration))
 
             with st.container():
                 col1, col2 = st.columns(2)
