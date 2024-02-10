@@ -43,10 +43,10 @@ def declare_variable(name, default):
 
 declare_variable("measurements", [])
 declare_variable("conditions", {
-    "start_date": date(),
+    "start_date": datetime.now(ZoneInfo("Asia/Tokyo")).date(),
     "start_time": time(0, 0),
     "start_frac": 0,
-    "end_date": date(),
+    "end_date": (datetime.now(ZoneInfo("Asia/Tokyo"))-timedelta(days=30)).date(),
     "end_time": time(0, 0),
     "end_frac": 0,
     "meas_name": None, 
