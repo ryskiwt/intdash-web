@@ -63,6 +63,7 @@ if ("checked_measurements" not in st.session_state) or (st.session_state.checked
     st.session_state.checked_measurements = set()
 
 with st.expander("検索結果", expanded=True):
+    st.write("hoge")
     if search:
         limit = 50
         params = {
@@ -149,7 +150,6 @@ with st.expander("検索結果", expanded=True):
                 checked = meas_uuid in st.session_state.checked_measurements
                 if st.checkbox("この計測を対象にする", key=f"checkbox_{i}", value=checked):
                     st.session_state.checked_measurements.add(meas_uuid)
-                    st.write(st.session_state.checked_measurements)
                 else:
                     if checked:
                         st.session_state.checked_measurements.remove(meas_uuid)
