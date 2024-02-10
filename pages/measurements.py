@@ -53,7 +53,7 @@ with st.expander("検索条件", expanded=True):
         name = col1.text_input("計測名")
         uuid = col2.text_input("UUID")
     
-    edge_name_q = st.selectbox("エッジ名", [{"name": k, "uuid": v} for k,v in EDGE_NAME_MAP.items()], format_func=lambda item: item["name"], index=None)
+    edge_name_q = st.selectbox("エッジ名", [{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()], format_func=lambda item: item["name"], index=None)
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
     page = st.number_input("ページ", value=1)
