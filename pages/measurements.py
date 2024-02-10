@@ -88,8 +88,7 @@ if search:
     if uuid is not None:
         params["uuid"] = uuid
     if edge_name_q is not None:
-        st.write(PATTERN.findall(edge_name_q))
-        params["edge_uuid"] = PATTERN.findall(edge_name_q)
+        params["edge_uuid"] = PATTERN.findall(edge_name_q)[0]
 
     resp = requests.get(
         url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
