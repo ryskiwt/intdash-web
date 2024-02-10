@@ -5,6 +5,8 @@ from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
 import human_readable
 
+human_readable.i18n.activate("ja_JP")
+
 with st.expander("検索条件", expanded=True):
     with st.container():
         col1, col2, col3 = st.columns(3)
@@ -68,11 +70,16 @@ if search:
 
     for item in resp["items"]:
         with st.container(border=True):
-            splitted = item["basetime"].split(".")
-            bt = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
-            st.write(bt)
+            duration = timedelta(microseconds=item["duration"])
 
-            st.write(human_readable.precise_delta(timedelta(microseconds=item["duration"]), suppress=["days"], minimum_unit="microseconds"))
+            splitted = item["basetime"].split(".")
+            start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
+            end_time = start_time + duration
+
+            st.write(start_time)
+            st.write(end_time)
+
+            st.write(human_readable.precise_delta(duration, suppress=["days"], minimum_unit="microseconds"))
             st.write(item)
 
 
