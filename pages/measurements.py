@@ -3,7 +3,7 @@ import requests
 from datetime import time, datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
-import re
+import pytz
 
 STATUS_MAP = {
     "ready": "計測準備中",
@@ -55,7 +55,7 @@ with st.expander("検索条件", expanded=True):
     
     edge_name_q = st.selectbox("エッジ名", [{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()], format_func=lambda item: item["name"], index=None)
 
-    tz = st.text_input("タイムゾーン", "Asia/Tokyo")
+    tz = st.selectbox("タイムゾーン", pytz.common_timezones, index="Asia/Tokyo")
     page = st.number_input("ページ", value=1)
     search = st.button("検索する")
 
@@ -137,8 +137,8 @@ if search:
                 else:
                     col2.write(f"{processed_ratio:3.1f} % (iSCPv1)")
 
-            st.write(f"エッジ名: [{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
-            st.write(f"計測名: [{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
+            st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
+            st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
 
 
 
