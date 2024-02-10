@@ -24,7 +24,7 @@ with st.expander("検索条件", expanded=True):
 
     tz = st.text_input("タイムゾーン", "Asia/Tokyo")
     page = st.number_input("ページ", value=1)
-    search = st.button("検索する"):
+    search = st.button("検索する")
 
 if search:
     params = {
