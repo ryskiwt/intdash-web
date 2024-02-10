@@ -3,9 +3,6 @@ import requests
 from datetime import time, datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
-import human_readable
-
-human_readable.i18n.activate("ja_JP")
 
 with st.expander("検索条件", expanded=True):
     with st.container():
@@ -70,6 +67,7 @@ if search:
 
     for item in resp["items"]:
         with st.container(border=True):
+            meas_uuid = item["uuid"]
             duration = timedelta(microseconds=item["duration"])
 
             splitted = item["basetime"].split(".")
@@ -79,7 +77,25 @@ if search:
             st.write(start_time)
             st.write(end_time)
 
-            st.write(human_readable.precise_delta(duration, suppress=["days"], minimum_unit="microseconds"))
+            hours = duration.seconds // 3600
+            minutes = (duration.seconds - hours*3600) // 60
+            seconds = duration.seconds - hours*3600 - minutes*60
+            hours += duration.days*24
+
+            st.write(f"{hours} 時間 {minutes} 分 {seconds} 秒")
+
+            edge_uuid = item["edge_uuid"]
+            resp = requests.get(
+                url=f"{st.session_state.url}/api/auth/projects/{st.session_state.project_uuid}/edges/{edge_uuid}",
+                headers={"X-Intdash-Token": st.session_state.token},
+            )
+            resp.raise_for_status()
+            resp = resp.json()
+            edge_name = resp["name"]
+            st.write(f"{edge_name} ({edge_uuid})")
+
+            st.write(f"{st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}")
+
             st.write(item)
 
 
