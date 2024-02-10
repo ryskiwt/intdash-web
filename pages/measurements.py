@@ -1,11 +1,11 @@
 import streamlit as st
 import requests
-from datetime import time, datetime
+from datetime import time, datetime, timezone
 from zoneinfo import ZoneInfo
 
 uuid = st.text_input("UUID")
 name = st.text_input("計測名")
-timezone = st.text_input("タイムゾーン", "Asia/Tokyo")
+tz = st.text_input("タイムゾーン", "Asia/Tokyo")
 start_date = st.date_input("開始日時（日付）")
 start_time = st.time_input("開始日時（時刻）", value=time(0, 0))
 start_frac = st.number_input("開始日時（小数点以下）", min_value=0, max_value=999999999)
@@ -20,8 +20,8 @@ start_rfc3339 = datetime(
     start_time.hour,
     start_time.minute,
     start_time.second,
-    tzinfo=ZoneInfo(timezone),
-).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
+    tzinfo=ZoneInfo(tz),
+).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
 end_rfc3339 = datetime(
     end_date.year,
     end_date.month,
@@ -29,8 +29,8 @@ end_rfc3339 = datetime(
     end_time.hour,
     end_time.minute,
     end_time.second,
-    tzinfo=ZoneInfo(timezone),
-).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
+    tzinfo=ZoneInfo(tz),
+).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z')
 st.write(start_rfc3339)
 st.write(end_rfc3339)
 
