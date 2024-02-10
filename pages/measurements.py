@@ -69,7 +69,7 @@ if search:
     for item in resp["items"]:
         with st.container(border=True):
             splitted = item["basetime"].split(".")
-            bt = datetime(splitted[0]+"Z").astimezone(ZoneInfo(tz))
+            bt = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
             st.write(bt)
 
             st.write(human_readable.precise_delta(timedelta(microseconds=item["duration"]), suppress=["days"], minimum_unit="microseconds"))
