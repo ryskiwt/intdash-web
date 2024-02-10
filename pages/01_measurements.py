@@ -70,6 +70,10 @@ def on_click_search():
     st.session_state.page = 1
     search()
 
+def on_change_slider():
+    st.session_state.page = st.session_state["slider"]
+    search()
+
 def on_click_prev():
     st.session_state.page -= 1
     if st.session_state.page < 1:
@@ -188,10 +192,10 @@ def cropped_start_end(basetime, duration, tz):
     return start_time, end_time
 
 with st.expander("検索結果", expanded=True):
+    st.slider("ページ", label_visibility="hidden", min_value=1, max_value=st.session_state.total_page, value=st.session_state.page, on_change=on_change_slider, key="slider")
     st.write(f"{st.session_state.page} / {st.session_state.total_page} ページ")
-    st.session_state.page = st.slider("ページ", label_visibility="hidden", min_value=1, max_value=st.session_state.total_page, value=st.session_state.page, on_change=search)
     with st.container():
-        col1, col2, col3 = st.columns([1, 2, 1])
+        col1, col2, col3 = st.columns([1, 1, 2])
         col1.button("< 前のページ", on_click=on_click_prev)
         col3.button("次のページ >", on_click=on_click_next)
 
