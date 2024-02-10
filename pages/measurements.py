@@ -4,6 +4,14 @@ from datetime import time, datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
 
+STATUS_MAP = {
+    "ready": "計測準備中",
+    "measuring": "計測中",
+    "resending": "再送中",
+    "finished": "完了",
+    "completed": "完了",
+}
+
 with st.expander("検索条件", expanded=True):
     with st.container():
         col1, col2, col3 = st.columns(3)
@@ -73,17 +81,12 @@ if search:
 
             splitted = item["basetime"].split(".")
             start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
-            end_time = (start_time + duration).replace(microsecond=0)
-
-            st.write(start_time)
-            st.write(end_time)
+            end_time = (start_time + duration)
 
             hours = duration.seconds // 3600
             minutes = (duration.seconds - hours*3600) // 60
             seconds = duration.seconds - hours*3600 - minutes*60
             hours += duration.days*24
-
-            st.write(f"{hours} 時間 {minutes} 分 {seconds} 秒")
 
             edge_uuid = item["edge_uuid"]
             resp = requests.get(
@@ -93,22 +96,26 @@ if search:
             resp.raise_for_status()
             resp = resp.json()
             edge_name = resp["name"]
-            st.write(f"[{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
-            st.write(f"[{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
 
-            status_map = {
-                "ready": "計測準備中",
-                "measuring": "計測中",
-                "resending": "再送中",
-                "finished": "完了",
-                "completed": "完了",
-            }
-            st.write(status_map[item["sequences"]["status"]])
+            with st.container():
+                col1, col2 = st.columns(2)
+                col1.write(start_time.strftime("%Y/%m/%d %H:%M:%S") + " - " + end_time.strftime("%Y/%m/%d %H:%M:%S"))
+                col2.write(f"{hours} 時間 {minutes} 分 {seconds} 秒")
 
-            received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
-            received_data_points = item["sequences"]["received_data_points"]
-            expected_data_points = item["sequences"]["expected_data_points"]
-            st.write(f"{received_chunks_ratio:.1f} % ({received_data_points} / {expected_data_points} points)")
+            st.write(f"エッジ名: [{edge_name} ({edge_uuid})]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})")
+            st.write(f"計測名: [{meas_name} ({meas_uuid})]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid})")
+
+            with st.container():
+                col1, col2, col3 = st.columns(3)
+                col1.write(STATUS_MAP[item["sequences"]["status"]])
+
+                received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
+                received_data_points = item["sequences"]["received_data_points"]
+                expected_data_points = item["sequences"]["expected_data_points"]
+                col2.write(f"{received_chunks_ratio:.1f} % ({received_data_points} / {expected_data_points} points)")
+
+                processed_ratio = item["processed_ratio"]
+                col3.write(f"{processed_ratio:.1f} %")
 
 
 parsed_url = urlparse(st.session_state.url)
