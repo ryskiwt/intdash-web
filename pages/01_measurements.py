@@ -13,7 +13,7 @@ STATUS_MAP = {
     "completed": "完了",
 }
 
-EDGE_NAME_MAP = set()
+EDGE_NAME_MAP = {}
 page = 1
 while True:
     params = {
@@ -59,7 +59,7 @@ with st.expander("検索条件", expanded=True):
     page = st.number_input("ページ", value=1, min_value=1)
     search = st.button("検索する")
 
-st.session_state.checked_measurements = []
+st.session_state.checked_measurements = set()
 
 with st.expander("検索結果", expanded=True):
     if search:
