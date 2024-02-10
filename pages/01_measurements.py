@@ -41,11 +41,12 @@ def declare_variable(name, default):
         st.session_state[name] = default
 
 declare_variable("measurements", [])
+declare_variable("page", 1)
 declare_variable("total_page", 0)
 declare_variable("checked_measurement_uuids", set())
 
 
-def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_frac, meas_name, meas_uuid, edge_uuid, page, limit):
+def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_frac, meas_name, meas_uuid, edge_uuid, limit):
     params = {
         "start": datetime(
             start_date.year,
@@ -65,7 +66,7 @@ def on_click_search(start_date, start_time, start_frac, end_date, end_time, end_
             end_time.second,
             tzinfo=ZoneInfo(tz),
         ).astimezone(timezone.utc).strftime(f'%Y-%m-%dT%H:%M:%S.{end_frac:09}Z'),
-        "page": page,
+        "page": st.session_state.page,
         "limit": limit,
     }
     if meas_name is not None:
@@ -117,10 +118,11 @@ with st.expander("検索条件", expanded=True):
         index=pytz.common_timezones.index("Asia/Tokyo"),
     )
 
-    with st.container():
-        col1, col2 = st.columns(2)
-        page = col1.number_input("ページ", value=1, min_value=1)
-        limit = col2.number_input("件数/ページ", value=50, min_value=1)
+    limit = st.number_input("件数/ページ", value=10, min_value=1)
+
+    st.write(start_date)
+    st.write(start_time)
+    st.write(start_frac)
 
     st.button("検索する", on_click=on_click_search, kwargs={
         "start_date": start_date, 
@@ -132,7 +134,6 @@ with st.expander("検索条件", expanded=True):
         "meas_name": meas_name, 
         "meas_uuid": meas_uuid, 
         "edge_uuid": None if edge_name_q is None else edge_name_q["uuid"], 
-        "page": page,
         "limit": limit, 
     })
 
@@ -150,7 +151,22 @@ def cropped_start_end(basetime, duration, tz):
     return start_time, end_time
 
 with st.expander("検索結果", expanded=True):
-    st.write(f"{page} / {st.session_state.total_page} pages")
+    with st.container():
+        col1, col2, col3 = st.columns(3)
+        col1.write(f"{page} / {st.session_state.total_page} pages")
+        # col2.button("前のページ", on_click=on_click_search, kwargs={
+        #     "start_date": start_date, 
+        #     "start_time": start_time, 
+        #     "start_frac": start_frac, 
+        #     "end_date": end_date, 
+        #     "end_time": end_time, 
+        #     "end_frac": end_frac, 
+        #     "meas_name": meas_name, 
+        #     "meas_uuid": meas_uuid, 
+        #     "edge_uuid": None if edge_name_q is None else edge_name_q["uuid"], 
+        #     "limit": limit, 
+        # })
+        # col2.button("次のページ")
 
     for i, item in enumerate(st.session_state.measurements):
         with st.container(border=True):
