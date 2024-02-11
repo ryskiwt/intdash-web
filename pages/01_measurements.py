@@ -238,7 +238,7 @@ with st.expander("検索結果", expanded=True):
             st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
 
             checked = meas_uuid in st.session_state.checked_measurement_uuids
-            st.checkbox("この計測を選択する", key=f"meas_{meas_uuid}", value=checked, on_change=on_change_checkbox):
+            st.checkbox("この計測を選択する", key=f"meas_{meas_uuid}", value=checked, on_change=on_change_checkbox, args=(meas_uuid,))
 
 with st.expander("選択中の計測"):
     for meas_uuid in list(st.session_state.checked_measurement_uuids):
