@@ -239,11 +239,15 @@ with st.expander("検索結果", expanded=True):
 
             checked = meas_uuid in st.session_state.checked_measurement_uuids
             st.checkbox("この計測を選択する", key=f"meas_{meas_uuid}", value=checked, on_change=on_change_checkbox, args=(meas_uuid,))
+            # TODO メタ情報を足しておく
 
 with st.expander("選択中の計測"):
     for meas_uuid in list(st.session_state.checked_measurement_uuids):
-        if not st.checkbox(meas_uuid, key=f"meas_selected_{meas_uuid}_{i}", value=True):
+        if not st.checkbox(meas_uuid, key=f"meas_selected_{meas_uuid}", value=True):
             st.session_state.checked_measurement_uuids.remove(meas_uuid)
+    
+    # TODO ちゃんと機能するようにする
+
 
 
 
