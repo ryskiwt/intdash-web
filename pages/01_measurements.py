@@ -84,6 +84,13 @@ def on_click_next():
     st.session_state.page += 1
     search()
 
+def on_change_checkbox(meas_uuid):
+    checked = st.session_state[f"meas_{meas_uuid}"]
+    if checked:
+        st.session_state.checked_measurement_uuids.add(meas_uuid)
+    else:
+        st.session_state.checked_measurement_uuids.remove(meas_uuid)
+
 def search():
     params = {
         "start": dtf_to_query(
@@ -231,11 +238,7 @@ with st.expander("検索結果", expanded=True):
             st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
 
             checked = meas_uuid in st.session_state.checked_measurement_uuids
-            if st.checkbox("この計測を選択する", key=f"meas_{meas_uuid}_{i}", value=checked):
-                st.session_state.checked_measurement_uuids.add(meas_uuid)
-            else:
-                if checked:
-                    st.session_state.checked_measurement_uuids.remove(meas_uuid)
+            st.checkbox("この計測を選択する", key=f"meas_{meas_uuid}", value=checked, on_change=on_change_checkbox):
 
 with st.expander("選択中の計測"):
     for meas_uuid in list(st.session_state.checked_measurement_uuids):
