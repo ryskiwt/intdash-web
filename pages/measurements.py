@@ -391,6 +391,8 @@ def display_companion_measurement(item):
     st.write(f"計測: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
+    st.write(item["data_ids"])
+
     iscpv2 = False
     id_count = len(item["data_ids"])
     if id_count == 0:
