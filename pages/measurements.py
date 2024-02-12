@@ -199,7 +199,7 @@ def cropped_start_end(basetime_rfc3339, duration, tz):
     end_time = (start_time + duration).replace(microsecond=0)
     return start_time.strftime("%Y/%m/%d %H:%M:%S"), end_time.strftime("%Y/%m/%d %H:%M:%S")
 
-def display_measurement(item):
+def display_measurement(item, key_suffix=""):
     with st.container(border=True):
         meas_uuid = item["uuid"]
         meas_name = "<名称なし>" if item["name"]=="" else item["name"]
@@ -302,7 +302,7 @@ with st.expander("選択中の計測"):
             resp.raise_for_status()
             resp = resp.json()
 
-            display_measurement(resp)
+            display_measurement(resp, key_suffix="_selected")
 
 
     
