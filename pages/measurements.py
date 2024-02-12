@@ -130,6 +130,7 @@ def search():
     resp.raise_for_status()
     resp = resp.json()
 
+    st.session_state.total_count = resp["page"]["total_count"]
     st.session_state.total_page = -((-resp["page"]["total_count"])//st.session_state.conditions["limit"])
     st.session_state.measurements = resp["items"]
 
@@ -255,7 +256,7 @@ def display_measurement(item):
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
 
-with st.expander("検索結果", expanded=True):
+with st.expander(f"検索結果 {st.session_state.total_count}件", expanded=True):
     with st.container():
         col1, col2 = st.columns([1, 4])
         col1.button("< 前のページ", on_click=on_click_prev)
