@@ -109,12 +109,12 @@ def search():
             st.session_state.conditions["end_frac"],
             st.session_state.conditions["timezone"],
         ),
-        "duration_start": st.session_state.conditions["duration_min"]/1000000,
+        "duration_start": int(st.session_state.conditions["duration_min"]*1000000),
         "limit": st.session_state.conditions["limit"],
         "page": st.session_state.page,
     }
     if st.session_state.conditions["duration_max"] is not None:
-        params["duration_end"] = st.session_state.conditions["duration_max"]/1000000
+        params["duration_end"] = int(st.session_state.conditions["duration_max"]*1000000)
     if st.session_state.conditions["meas_name"] is not None:
         params["name"] = st.session_state.conditions["limit"]
     if st.session_state.conditions["meas_uuid"] is not None:
