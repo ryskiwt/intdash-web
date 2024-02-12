@@ -426,7 +426,7 @@ with st.expander(f"同範囲にある計測 {len(companion_measurements)}件", e
 df = pd.DataFrame({
     "データ型": [],
     "データ名": [],
-    "ノードUUID": [],
+    "ノード名": [],
     "計測UUID": [],
 })
 for item in companion_measurements:
@@ -450,7 +450,7 @@ for item in companion_measurements:
         df = pd.concat([df, pd.DataFrame({
             "データ型": [data_type],
             "データ名": [data_name],
-            "ノードUUID": [edge_uuid],
+            "ノード名": [EDGE_NAME_MAP[edge_uuid]],
             "計測UUID": [meas_uuid],
         })])
     
