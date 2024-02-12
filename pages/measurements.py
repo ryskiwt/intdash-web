@@ -367,8 +367,8 @@ else:
         url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
         headers={"X-Intdash-Token": st.session_state.token},
         params={
-            "start": meas_start.isoformat(),
-            "end": meas_end.isoformat(),
+            "start": meas_start.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+            "end": meas_end.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "partial_match": True,
             "limit":  1000,
             "page": page,
