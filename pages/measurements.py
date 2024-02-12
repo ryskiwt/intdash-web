@@ -134,7 +134,7 @@ def search():
     st.session_state.measurements = resp["items"]
 
 
-st.write("## 検索")
+st.write("## 計測の検索")
 with st.expander("検索条件", expanded=True):
     def craete_datetime_input(label, date_value, time_value, frac_value):
         with st.container():
@@ -312,14 +312,14 @@ if st.session_state.checked_measurement_uuid is None:
     with st.container(border=True):
         st.write("<未選択>")
 else:
-    with st.container(border=True):
-        resp = requests.get(
-            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{st.session_state.checked_measurement_uuid}",
-            headers={"X-Intdash-Token": st.session_state.token},
-        )
-        resp.raise_for_status()
-        resp = resp.json()
+    resp = requests.get(
+        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{st.session_state.checked_measurement_uuid}",
+        headers={"X-Intdash-Token": st.session_state.token},
+    )
+    resp.raise_for_status()
+    resp = resp.json()
 
+    with st.container(border=True):
         display_selected_measurement(resp)
 
         resp = requests.get(
@@ -358,6 +358,26 @@ else:
                     column_config={"_index": "#"},
                     use_container_width=True,
                 )
+
+    start = datetime.fromisoformat(resp["basetime"])
+    end = start + timedelta(microseconds=resp["max_elapsed_time"])
+
+    page = 1
+    resp = requests.get(
+        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
+        headers={"X-Intdash-Token": st.session_state.token},
+        params={
+            "start": start.isoformat(),
+            "end": end.isoformat(),
+            "partial_match": True,
+            "limit":  1000,
+            "page": page,
+        },
+    )
+    resp.raise_for_status()
+    resp = resp.json()
+    st.write(resp)
+
 
     
     # TODO ちゃんと機能するようにする
