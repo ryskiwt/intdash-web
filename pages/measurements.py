@@ -331,7 +331,7 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
             st.dataframe(
                 df,
                 column_config={"_index": "#"},
-                use_container_width=st.session_state.use_container_width,
+                use_container_width=True,
             )
 
     
