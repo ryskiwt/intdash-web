@@ -157,16 +157,18 @@ with st.expander("検索条件", expanded=True):
         meas_name = col1.text_input(label="計測名", placeholder="Optional", value=st.session_state.conditions["meas_name"])
         meas_uuid = col2.text_input(label="UUID", placeholder="Optional", value=st.session_state.conditions["meas_uuid"])
     
-    edge_info = st.selectbox(
-        label="ノード名",
-        options=[{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()],
-        format_func=lambda item: item["name"],
-        index=None,
-        key="edge_info_selectbox"
-    )
-    if st.session_state.conditions["edge_info"] is not None:
-        edge_info = st.session_state.conditions["edge_info"]
-        st.session_state["edge_info_selectbox"] = {"name": edge_info["name"], "uuid": edge_info["uuid"]}
+    with st.container():
+        col1, col2 = st.columns([3, 1])
+        edge_info = col1.selectbox(
+            label="ノード名",
+            options=[{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()],
+            format_func=lambda item: item["name"],
+            index=None if st.session_state.conditions["edge_info"] is None else list(EDGE_NAME_MAP.keys()).index(st.session_state.conditions["edge_info"]["uuid"]),
+        )
+        if st.checkbox("未選択に初期化", value=edge_info not is None):
+            edge_info = None
+
+
     
     tz = st.selectbox(
         label="タイムゾーン",
