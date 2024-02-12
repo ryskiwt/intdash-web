@@ -415,10 +415,10 @@ with st.expander(f"同範囲にある計測 {len(companion_measurements)}件", e
 
 
 df = pd.DataFrame({
+    "ノード名": [],
     "データ型": [],
     "データ名": [],
-    "ノード名": [],
-    "計測UUID": [],
+    "計測": [],
 })
 for item in companion_measurements:
     meas_uuid = item["uuid"]
@@ -432,11 +432,11 @@ for item in companion_measurements:
             data_type = data_id["data_type"]
             data_name = data_id['data_id']
         df = pd.concat([df, pd.DataFrame({
+            "ノード名": [f"{EDGE_NAME_MAP[edge_uuid]}  ({edge_uuid})"],
             "データ型": [data_type],
             "データ名": [data_name],
-            "ノード名": [EDGE_NAME_MAP[edge_uuid]],
-            "計測UUID": [meas_uuid],
-        })])
+            "計測": [f"{'<名称なし>' if meas_name=="" else meas_name} ({meas_uuid})"],
+        })], ignore_index=True)
     
 st.dataframe(
     df,
