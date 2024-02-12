@@ -435,7 +435,7 @@ for item in companion_measurements:
             "ノード名": [f"{EDGE_NAME_MAP[edge_uuid]}  ({edge_uuid})"],
             "データ型": [data_type],
             "データ名": [data_name],
-            "計測": [f"{'<名称なし>' if meas_name=="" else meas_name} ({meas_uuid})"],
+            "計測": [f"{'<名称なし>' if meas_name=='' else meas_name} ({meas_uuid})"],
         })], ignore_index=True)
     
 st.dataframe(
