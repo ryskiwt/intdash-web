@@ -348,6 +348,10 @@ else:
             resp2 = requests.get(
                 url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas['uuid']}/getids",
                 headers={"X-Intdash-Token": st.session_state.token},
+                params={
+                    "start": meas_start.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                    "end": meas_end.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                },
             )
             resp2.raise_for_status()
             resp2 = resp2.json()
@@ -393,10 +397,10 @@ def display_companion_measurement(item):
 
     id_count = len(item["data_ids"])
     if id_count == 0:
-        st.write(f"**データID 0件**")
+        st.write(f"**選択中の計測と同範囲に含まれるデータID 0件**")
         
     else:
-        st.write(f"**データID {id_count}件**")
+        st.write(f"**選択中の計測と同範囲に含まれるデータID {id_count}件**")
         st.dataframe(
             pd.DataFrame({
                 # TODO データIDがおかしい
@@ -413,7 +417,6 @@ with st.expander(f"同範囲にある計測 {len(companion_measurements)}件", e
     for item in companion_measurements:
         with st.container(border=True):
             display_companion_measurement(item)
-
 
 df = pd.DataFrame({
     "ノード名": [],
@@ -439,6 +442,7 @@ for item in companion_measurements:
             "計測": [f"{'<名称なし>' if item['name']=='' else item['name']} ({meas_uuid[:7]}...)"],
         })], ignore_index=True)
     
+st.write(st.write(f"**同範囲に含まれるデータID {len(df)}件**"))
 st.dataframe(
     df,
     column_config={"_index": "#"},
