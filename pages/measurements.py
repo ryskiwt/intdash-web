@@ -305,34 +305,42 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
 
         display_selected_measurement(resp)
 
-        with st.expander("データID", expanded=False):
-            resp = requests.get(
-                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}/getids",
-                headers={"X-Intdash-Token": st.session_state.token},
-            )
-            resp.raise_for_status()
-            resp = resp.json()
+        resp = requests.get(
+            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}/getids",
+            headers={"X-Intdash-Token": st.session_state.token},
+        )
+        resp.raise_for_status()
+        resp = resp.json()
 
-            iscpv2 = False
-            if len(resp["items"]) != 0:
-                iscpv2 = resp["items"][0]["data_type"]==0
+        iscpv2 = False
+        id_count = len(resp["items"])
+        if id_count == 0:
+            st.write(f"データID: 0 件")
+            
+        else
+            iscpv2 = resp["items"][0]["data_type"]==0
 
-            df = None
             if iscpv2:
-                df = pd.DataFrame({
-                    "data_id": [x["data_id"] for x in resp["items"]],
-                })
+                st.write(f"データID: {id_count} 件")
+                st.dataframe(
+                    pd.DataFrame({
+                        "Data ID": [x["data_id"] for x in resp["items"]],
+                    }),
+                    column_config={"_index": "#"},
+                    use_container_width=True,
+                )
+
             else:
-                df = pd.DataFrame({
-                    "type": [x["data_type"] for x in resp["items"]],
-                    "channel": [x["channel"] for x in resp["items"]],
-                    "data_id": [x["data_id"] for x in resp["items"]],
-                })
-            st.dataframe(
-                df,
-                column_config={"_index": "#"},
-                use_container_width=True,
-            )
+                st.write(f"データID (iSCPv1): {id_count} 件")
+                st.dataframe(
+                    pd.DataFrame({
+                        "Type": [x["data_type"] for x in resp["items"]],
+                        "CH": [x["channel"] for x in resp["items"]],
+                        "Data ID": [x["data_id"] for x in resp["items"]],
+                    }),
+                    column_config={"_index": "#"},
+                    use_container_width=True,
+                )
 
     
     # TODO ちゃんと機能するようにする
