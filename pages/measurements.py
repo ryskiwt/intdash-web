@@ -391,36 +391,21 @@ def display_companion_measurement(item):
     st.write(f"計測: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
-    iscpv2 = False
     id_count = len(item["data_ids"])
     if id_count == 0:
         st.write(f"**データID 0件**")
         
     else:
-        iscpv2 = item["data_ids"][0]["data_type"]==0
-
-        if iscpv2:
-            st.write(f"**データID {id_count}件**")
-            st.dataframe(
-                pd.DataFrame({
-                    "Data Type": [x["data_type"] for x in item["data_ids"]],
-                    "Data Name": [f"{x['channel']/x['data_id']}" for x in item["data_ids"]],
-                }),
-                column_config={"_index": "#"},
-                use_container_width=True,
-            )
-
-        else:
-            st.write(f"**データID {id_count}件 (iSCPv1)**")
-            st.dataframe(
-                pd.DataFrame({
-                    "Data Type": [x["data_type"] for x in item["data_ids"]],
-                    "Channel": [x["channel"] for x in item["data_ids"]],
-                    "Data ID": [x["data_id"] for x in item["data_ids"]],
-                }),
-                column_config={"_index": "#"},
-                use_container_width=True,
-            )
+        st.write(f"**データID {id_count}件**")
+        st.dataframe(
+            pd.DataFrame({
+                "Data Type": [x["data_type"] for x in item["data_ids"]],
+                "Data Name": [f"{x['channel']/x['data_id']}" for x in item["data_ids"] if x["data_type"]!=0 else x["data_id"]],
+                "iSCPv1": [x["data_type"]!=0 for x in item["data_ids"]],
+            }),
+            column_config={"_index": "#"},
+            use_container_width=True,
+        )
 
 
 with st.expander(f"同範囲にある計測 {len(companion_measurements)}件", expanded=False):
