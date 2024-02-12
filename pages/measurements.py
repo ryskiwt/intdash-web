@@ -328,7 +328,11 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
                     "channel": [x["channel"] for x in resp["items"]],
                     "data_id": [x["data_id"] for x in resp["items"]],
                 })
-            st.write(df)
+            st.dataframe(
+                df,
+                column_config={"_index": "#"},
+                use_container_width=st.session_state.use_container_width,
+            )
 
     
     # TODO ちゃんと機能するようにする
