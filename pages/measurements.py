@@ -319,11 +319,11 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
 
             df = None
             if iscpv2:
-                pd.DataFrame({
+                df = pd.DataFrame({
                     "data_id": [x["data_id"] for x in resp["items"]],
                 })
             else:
-                pd.DataFrame({
+                df = pd.DataFrame({
                     "type": [x["data_type"] for x in resp["items"]],
                     "channel": [x["channel"] for x in resp["items"]],
                     "data_id": [x["data_id"] for x in resp["items"]],
