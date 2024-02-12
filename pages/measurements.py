@@ -303,15 +303,19 @@ with st.expander("選択中の計測"):
 
             display_selected_measurement(resp)
 
-            resp = requests.get(
-                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}/getids",
-                headers={"X-Intdash-Token": st.session_state.token},
-            )
-            resp.raise_for_status()
-            resp = resp.json()
+            with st.expander("データID", expanded=False):
+                resp = requests.get(
+                    url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}/getids",
+                    headers={"X-Intdash-Token": st.session_state.token},
+                )
+                resp.raise_for_status()
+                resp = resp.json()
 
-            st.write(resp)
-
+                for item in resp["items"]:
+                    if item["data_type"] != 0:
+                        st.write(f"- type: {item['data_type']}, ch: {item['channel']}, id: {item['data_id']} (iSCPv1)")
+                    else:
+                        st.write(f"- {item['data_id']}")
 
     
     # TODO ちゃんと機能するようにする
