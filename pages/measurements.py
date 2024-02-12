@@ -315,13 +315,13 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
         iscpv2 = False
         id_count = len(resp["items"])
         if id_count == 0:
-            st.write(f"データID: 0 件")
+            st.write(f"**データID 0件**")
             
         else:
             iscpv2 = resp["items"][0]["data_type"]==0
 
             if iscpv2:
-                st.write(f"データID: {id_count} 件")
+                st.write(f"**データID {id_count}件**")
                 st.dataframe(
                     pd.DataFrame({
                         "Data ID": [x["data_id"] for x in resp["items"]],
@@ -331,7 +331,7 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
                 )
 
             else:
-                st.write(f"データID (iSCPv1): {id_count} 件")
+                st.write(f"**データID {id_count}件 (iSCPv1)**")
                 st.dataframe(
                     pd.DataFrame({
                         "Type": [x["data_type"] for x in resp["items"]],
