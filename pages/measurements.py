@@ -128,7 +128,7 @@ def search():
     st.session_state.measurements = resp["items"]
 
 
-st.write("## 検索"):
+st.write("## 検索")
 with st.expander("検索条件", expanded=True):
     def craete_datetime_input(label, date_value, time_value, frac_value):
         with st.container():
@@ -292,7 +292,7 @@ def display_selected_measurement(item):
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
 
-st.write("## 選択中の計測"):
+st.write("## 選択中の計測")
 for meas_uuid in list(st.session_state.checked_measurement_uuids):
     with st.container(border=True):
         resp = requests.get(
