@@ -447,7 +447,7 @@ for item in companion_measurements:
         else:
             data_type = data_id["data_type"]
             data_name = data_id['data_id']
-        df.concat(pd.DataFrame({
+        df = pd.concat(df, pd.DataFrame({
             "データ型": [data_type],
             "データ名": [data_name],
             "ノードUUID": [edge_uuid],
