@@ -319,6 +319,9 @@ else:
     resp.raise_for_status()
     resp = resp.json()
 
+    meas_start = datetime.fromisoformat(resp["basetime"])
+    meas_end = meas_start + timedelta(microseconds=resp["max_elapsed_time"])
+
     with st.container(border=True):
         display_selected_measurement(resp)
 
@@ -359,16 +362,13 @@ else:
                     use_container_width=True,
                 )
 
-    start = datetime.fromisoformat(resp["basetime"])
-    end = start + timedelta(microseconds=resp["max_elapsed_time"])
-
     page = 1
     resp = requests.get(
         url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
         headers={"X-Intdash-Token": st.session_state.token},
         params={
-            "start": start.isoformat(),
-            "end": end.isoformat(),
+            "start": meas_start.isoformat(),
+            "end": meas_end.isoformat(),
             "partial_match": True,
             "limit":  1000,
             "page": page,
