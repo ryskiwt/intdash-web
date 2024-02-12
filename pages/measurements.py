@@ -315,7 +315,7 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
 
             iscpv2 = False
             if len(resp["items"]) != 0:
-                iscpv2 = resp["items"][0]==0
+                iscpv2 = resp["items"][0]["data_type"]==0
 
             df = None
             if iscpv2:
