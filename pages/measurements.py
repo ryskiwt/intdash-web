@@ -404,10 +404,8 @@ def display_companion_measurement(item):
         st.write(f"**選択中の計測と同範囲に含まれるデータID {id_count}件**")
         st.dataframe(
             pd.DataFrame({
-                # TODO データIDがおかしい
                 "Data Type": [x["data_type"] for x in item["data_ids"]],
                 "Data Name": [x["data_id"] for x in item["data_ids"]],
-                "iSCPv1": ["yes" if x["data_type"]!=0 else "" for x in item["data_ids"]],
             }),
             column_config={"_index": "#"},
             use_container_width=True,
