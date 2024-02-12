@@ -41,13 +41,14 @@ def declare_variable(name, default):
     if name not in st.session_state:
         st.session_state[name] = default
 
+now = datetime.now(ZoneInfo("Asia/Tokyo"))
 declare_variable("measurements", [])
 declare_variable("conditions", {
-    "start_date": (datetime.now(ZoneInfo("Asia/Tokyo"))-timedelta(days=30)).date(),
+    "start_date": now.replace(month=now.month-1, day=1).date(),
     "start_time": time(0, 0),
     "start_frac": 0,
-    "end_date": datetime.now(ZoneInfo("Asia/Tokyo")).date(),
-    "end_time": time(0, 0),
+    "end_date": now.date(),
+    "end_time": now.time().replace(microsecond=0),
     "end_frac": 0,
     "meas_name": None, 
     "meas_uuid": None, 
