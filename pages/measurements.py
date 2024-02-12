@@ -161,8 +161,12 @@ with st.expander("検索条件", expanded=True):
         label="ノード名",
         options=[{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()],
         format_func=lambda item: item["name"],
-        index=None if st.session_state.conditions["edge_info"] is None else list(EDGE_NAME_MAP.keys()).index(st.session_state.conditions["edge_info"]["uuid"]),
+        index=None,
+        key="edge_info_selectbox"
     )
+    if st.session_state.conditions["edge_info"] is not None:
+        edge_info = st.session_state.conditions["edge_info"]
+        st.session_state["edge_info_selectbox"] = {"name": edge_info["name"], "uuid": edge_info["uuid"]}
     
     tz = st.selectbox(
         label="タイムゾーン",
