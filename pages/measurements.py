@@ -61,7 +61,7 @@ declare_variable("conditions", {
 })
 declare_variable("page", 1)
 declare_variable("total_page", 0)
-declare_variable("checked_measurement_uuids", set())
+declare_variable("checked_measurement_uuid", None)
 
 def dtf_to_query(d, t, f, tz):
     return datetime(
@@ -91,9 +91,9 @@ def on_click_next():
 def on_change_checkbox(meas_uuid, key):
     checked = st.session_state[key]
     if checked:
-        st.session_state.checked_measurement_uuids.add(meas_uuid)
+        st.session_state.checked_measurement_uuid = meas_uuid
     else:
-        st.session_state.checked_measurement_uuids.remove(meas_uuid)
+        st.session_state.checked_measurement_uuid = None
 
 def search():
     params = {
@@ -225,7 +225,7 @@ def display_measurement(item):
     st.checkbox(
         "この計測を選択する",
         key=f"meas_{meas_uuid}",
-        value=meas_uuid in st.session_state.checked_measurement_uuids,
+        value=meas_uuid==st.session_state.checked_measurement_uuid,
         on_change=on_change_checkbox,
         args=(meas_uuid, f"meas_{meas_uuid}"),
     )
@@ -277,7 +277,7 @@ def display_selected_measurement(item):
     st.checkbox(
         "この計測の選択を外す",
         key=f"meas_selected_{meas_uuid}",
-        value=meas_uuid in st.session_state.checked_measurement_uuids,
+        value=meas_uuid==st.session_state.checked_measurement_uuid,
         on_change=on_change_checkbox,
         args=(meas_uuid, f"meas_selected_{meas_uuid}"),
     )
@@ -308,53 +308,52 @@ def display_selected_measurement(item):
 
 
 st.write("## 選択中の計測")
-for meas_uuid in list(st.session_state.checked_measurement_uuids):
-    with st.container(border=True):
-        resp = requests.get(
-            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}",
-            headers={"X-Intdash-Token": st.session_state.token},
-        )
-        resp.raise_for_status()
-        resp = resp.json()
+with st.container(border=True):
+    resp = requests.get(
+        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{st.session_state.checked_measurement_uuid}",
+        headers={"X-Intdash-Token": st.session_state.token},
+    )
+    resp.raise_for_status()
+    resp = resp.json()
 
-        display_selected_measurement(resp)
+    display_selected_measurement(resp)
 
-        resp = requests.get(
-            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}/getids",
-            headers={"X-Intdash-Token": st.session_state.token},
-        )
-        resp.raise_for_status()
-        resp = resp.json()
+    resp = requests.get(
+        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{st.session_state.checked_measurement_uuid}/getids",
+        headers={"X-Intdash-Token": st.session_state.token},
+    )
+    resp.raise_for_status()
+    resp = resp.json()
 
-        iscpv2 = False
-        id_count = len(resp["items"])
-        if id_count == 0:
-            st.write(f"**データID 0件**")
-            
+    iscpv2 = False
+    id_count = len(resp["items"])
+    if id_count == 0:
+        st.write(f"**データID 0件**")
+        
+    else:
+        iscpv2 = resp["items"][0]["data_type"]==0
+
+        if iscpv2:
+            st.write(f"**データID {id_count}件**")
+            st.dataframe(
+                pd.DataFrame({
+                    "Data ID": [x["data_id"] for x in resp["items"]],
+                }),
+                column_config={"_index": "#"},
+                use_container_width=True,
+            )
+
         else:
-            iscpv2 = resp["items"][0]["data_type"]==0
-
-            if iscpv2:
-                st.write(f"**データID {id_count}件**")
-                st.dataframe(
-                    pd.DataFrame({
-                        "Data ID": [x["data_id"] for x in resp["items"]],
-                    }),
-                    column_config={"_index": "#"},
-                    use_container_width=True,
-                )
-
-            else:
-                st.write(f"**データID {id_count}件 (iSCPv1)**")
-                st.dataframe(
-                    pd.DataFrame({
-                        "Type": [x["data_type"] for x in resp["items"]],
-                        "CH": [x["channel"] for x in resp["items"]],
-                        "Data ID": [x["data_id"] for x in resp["items"]],
-                    }),
-                    column_config={"_index": "#"},
-                    use_container_width=True,
-                )
+            st.write(f"**データID {id_count}件 (iSCPv1)**")
+            st.dataframe(
+                pd.DataFrame({
+                    "Type": [x["data_type"] for x in resp["items"]],
+                    "CH": [x["channel"] for x in resp["items"]],
+                    "Data ID": [x["data_id"] for x in resp["items"]],
+                }),
+                column_config={"_index": "#"},
+                use_container_width=True,
+            )
 
     
     # TODO ちゃんと機能するようにする
