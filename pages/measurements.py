@@ -406,7 +406,7 @@ def display_companion_measurement(item):
             pd.DataFrame({
                 # TODO データIDがおかしい
                 "Data Type": [x["data_type"] for x in item["data_ids"]],
-                "Data Name": [f"{x['channel']}/{x['data_id']}" if x["data_type"]!=0 else x["data_id"] for x in item["data_ids"]],
+                "Data Name": [x["data_id"] for x in item["data_ids"]],
                 "iSCPv1": ["yes" if x["data_type"]!=0 else "" for x in item["data_ids"]],
             }),
             column_config={"_index": "#"},
