@@ -428,16 +428,10 @@ for item in companion_measurements:
     edge_uuid = item["edge_uuid"]
 
     for data_id in item["data_ids"]:
-        if data_id["data_type"] != 0:
-            data_type = data_id["data_type"]
-            data_name = f"{data_id['channel']}/{data_id['data_id']}"
-        else:
-            data_type = data_id["data_type"]
-            data_name = data_id['data_id']
         df = pd.concat([df, pd.DataFrame({
             "ノード名": [f"{EDGE_NAME_MAP[edge_uuid]}  ({edge_uuid[:7]}...)"],
-            "データ型": [data_type],
-            "データ名": [data_name],
+            "データ型": [data_id["data_type"]],
+            "データ名": [data_id["data_id"]],
             "計測": [f"{'<名称なし>' if item['name']=='' else item['name']} ({meas_uuid[:7]}...)"],
         })], ignore_index=True)
     
