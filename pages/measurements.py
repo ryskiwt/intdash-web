@@ -404,8 +404,8 @@ def display_companion_measurement(item):
         st.write(f"**選択中の計測と同範囲に含まれるデータID {id_count}件**")
         st.dataframe(
             pd.DataFrame({
-                "Data Type": [x["data_type"] for x in item["data_ids"]],
-                "Data Name": [x["data_id"] for x in item["data_ids"]],
+                "データ型": [x["data_type"] for x in item["data_ids"]],
+                "データ名": [x["data_id"] for x in item["data_ids"]],
             }),
             column_config={"_index": "#"},
             use_container_width=True,
@@ -435,7 +435,7 @@ for item in companion_measurements:
             "計測": [f"{'<名称なし>' if item['name']=='' else item['name']} ({meas_uuid[:7]}...)"],
         })], ignore_index=True)
     
-st.write(st.write(f"**同範囲に含まれるデータID {len(df)}件**"))
+st.write(f"**同範囲に含まれるデータID {len(df)}件**")
 st.dataframe(
     df,
     column_config={"_index": "#"},
