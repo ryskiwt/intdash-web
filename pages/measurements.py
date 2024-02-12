@@ -363,7 +363,7 @@ else:
                 )
 
     page = 1
-    measurements = []
+    companion_measurements = []
     while True:
         resp = requests.get(
             url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
@@ -378,7 +378,7 @@ else:
         )
         resp.raise_for_status()
         resp = resp.json()
-        measurements += resp["items"]
+        companion_measurements += resp["items"]
 
         page += 1
         if not resp["page"]["next"]:
@@ -417,8 +417,9 @@ def display_companion_measurement(item):
 
 
 with st.expander("同範囲にある計測"):
-    with st.container(border=False):
-        display_companion_measurement(resp)
+    for item in companion_measurements:
+        with st.container(border=False):
+            display_companion_measurement(resp)
 
 
     
