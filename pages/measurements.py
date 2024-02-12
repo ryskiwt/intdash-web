@@ -363,20 +363,62 @@ else:
                 )
 
     page = 1
-    resp = requests.get(
-        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
-        headers={"X-Intdash-Token": st.session_state.token},
-        params={
-            "start": meas_start.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "end": meas_end.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "partial_match": True,
-            "limit":  1000,
-            "page": page,
-        },
-    )
-    resp.raise_for_status()
-    resp = resp.json()
-    st.write(resp)
+    measurements = []
+    while True:
+        resp = requests.get(
+            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements",
+            headers={"X-Intdash-Token": st.session_state.token},
+            params={
+                "start": meas_start.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "end": meas_end.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "partial_match": True,
+                "limit":  1000,
+                "page": page,
+            },
+        )
+        resp.raise_for_status()
+        resp = resp.json()
+        measurements += resp["items"]
+
+        page += 1
+        if not resp["page"]["next"]:
+            break
+
+def display_companion_measurement(item):
+    meas_uuid = item["uuid"]
+    meas_name = "<名称なし>" if item["name"]=="" else item["name"]
+
+    edge_uuid = item["edge_uuid"]
+    edge_name = EDGE_NAME_MAP[edge_uuid]
+
+    with st.container():
+        duration = timedelta(microseconds=item["max_elapsed_time"])
+        start_time, end_time = cropped_start_end(item["basetime"], duration, tz)
+        col1, col2 = st.columns(2)
+        col1.write(start_time + " - " + end_time)
+        col2.write(td_to_human_readable_string(duration))
+
+    with st.container():
+        col1, col2 = st.columns(2)
+        col1.write("ステータス: " + STATUS_MAP[item["sequences"]["status"]])
+
+        received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
+        received_data_points = item["sequences"]["received_data_points"]
+        expected_data_points = item["sequences"]["expected_data_points"]
+        processed_ratio = item["processed_ratio"] * 100.0
+
+        if received_data_points <= expected_data_points:
+            col2.write(f"{received_chunks_ratio:3.1f} % ({received_data_points} / {expected_data_points} points)")
+        else:
+            col2.write(f"{processed_ratio:3.1f} % (iSCPv1)")
+
+    st.write(f"計測: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
+    st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
+
+
+with st.expander("同範囲にある計測"):
+    with st.container(border=False):
+        display_companion_measurement(resp)
 
 
     
