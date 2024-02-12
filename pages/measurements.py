@@ -346,9 +346,10 @@ else:
 
         for meas in resp["items"]:
             resp2 = requests.get(
-                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas['uuid']}/getids",
+                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}//getids",
                 headers={"X-Intdash-Token": st.session_state.token},
                 params={
+                    "name": meas["uuid"],
                     "start": meas_start.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                     "end": meas_end.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
                 },
