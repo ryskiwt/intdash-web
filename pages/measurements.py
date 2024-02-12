@@ -419,7 +419,7 @@ def display_companion_measurement(item):
 with st.expander("同範囲にある計測"):
     for item in companion_measurements:
         with st.container(border=False):
-            display_companion_measurement(resp)
+            display_companion_measurement(item)
 
 
     
