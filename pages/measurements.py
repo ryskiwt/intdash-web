@@ -423,6 +423,39 @@ with st.expander(f"同範囲にある計測 {len(companion_measurements)}件", e
             display_companion_measurement(item)
 
 
+df = pd.DataFrame({
+    "データ型": [],
+    "データ名": [],
+    "ノードUUID": [],
+    "計測UUID": [],
+})
+for item in companion_measurements:
+    resp = requests.get(
+        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{item['uuid']}/getids",
+        headers={"X-Intdash-Token": st.session_state.token},
+    )
+    resp.raise_for_status()
+    resp = resp.json()
+
+    meas_uuid = item["uuid"]
+    edge_uuid = item["edge_uuid"]
+
+    for data_id in resp["items"]:
+        if data_id["data_type"] != 0:
+            data_type = data_id["data_type"]
+            data_name = f"{data_id['channel']}/{data_id['data_id']}"
+        else:
+            data_type = data_id["data_type"]
+            data_name = data_id['data_id']
+        df.concat(pd.DataFrame({
+            "データ型": [data_type],
+            "データ名": [data_name],
+            "ノードUUID": [edge_uuid],
+            "計測UUID": [meas_uuid],
+        }))
+    
+st.dataframe(df)
+
     
     # TODO ちゃんと機能するようにする
 
