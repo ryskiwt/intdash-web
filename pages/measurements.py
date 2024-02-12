@@ -391,8 +391,6 @@ def display_companion_measurement(item):
     st.write(f"計測: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
-    st.write(item["data_ids"])
-
     iscpv2 = False
     id_count = len(item["data_ids"])
     if id_count == 0:
@@ -438,17 +436,10 @@ df = pd.DataFrame({
     "計測UUID": [],
 })
 for item in companion_measurements:
-    resp = requests.get(
-        url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{item['uuid']}/getids",
-        headers={"X-Intdash-Token": st.session_state.token},
-    )
-    resp.raise_for_status()
-    resp = resp.json()
-
     meas_uuid = item["uuid"]
     edge_uuid = item["edge_uuid"]
 
-    for data_id in resp["items"]:
+    for data_id in item["data_ids"]:
         if data_id["data_type"] != 0:
             data_type = data_id["data_type"]
             data_name = f"{data_id['channel']}/{data_id['data_id']}"
