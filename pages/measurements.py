@@ -160,8 +160,8 @@ with st.expander("検索条件", expanded=True):
     edge_info = st.selectbox(
         label="ノード名",
         options=[None] + [{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()],
-        format_func=lambda item: None if item is None else item["name"],
-        index=None if st.session_state.conditions["edge_info"] is None else list(EDGE_NAME_MAP.keys()).index(st.session_state.conditions["edge_info"]["uuid"]),
+        format_func=lambda item: "<未選択>" if item is None else item["name"],
+        index=None if st.session_state.conditions["edge_info"] is None else list(EDGE_NAME_MAP.keys()).index(st.session_state.conditions["edge_info"]["uuid"])+1,
     )
 
 
