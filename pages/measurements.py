@@ -51,6 +51,8 @@ declare_variable("conditions", {
     "end_date": now.date(),
     "end_time": now.time().replace(microsecond=0),
     "end_frac": 0,
+    "duration_min": 0,
+    "duration_max": None,
     "meas_name": None, 
     "meas_uuid": None, 
     "edge_info": None, 
@@ -107,9 +109,12 @@ def search():
             st.session_state.conditions["end_frac"],
             st.session_state.conditions["timezone"],
         ),
+        "duration_start": st.session_state.conditions["duration_min"]/1000000,
         "limit": st.session_state.conditions["limit"],
         "page": st.session_state.page,
     }
+    if st.session_state.conditions["duration_max"] is not None:
+        params["duration_end"] = st.session_state.conditions["duration_max"]/1000000
     if st.session_state.conditions["meas_name"] is not None:
         params["name"] = st.session_state.conditions["limit"]
     if st.session_state.conditions["meas_uuid"] is not None:
@@ -154,6 +159,11 @@ with st.expander("検索条件", expanded=True):
 
     with st.container():
         col1, col2 = st.columns(2)
+        duration_min = col1.text_input(label="計測の長さの最小値", placeholder="Optional", value=st.session_state.conditions["duration_min"])
+        duration_max = col2.text_input(label="計測の長さの最大値", placeholder="Optional", value=st.session_state.conditions["duration_max"])
+
+    with st.container():
+        col1, col2 = st.columns(2)
         meas_name = col1.text_input(label="計測名", placeholder="Optional", value=st.session_state.conditions["meas_name"])
         meas_uuid = col2.text_input(label="UUID", placeholder="Optional", value=st.session_state.conditions["meas_uuid"])
     
@@ -181,6 +191,8 @@ with st.expander("検索条件", expanded=True):
         "end_date": end_date,
         "end_time": end_time,
         "end_frac": end_frac,
+        "duration_min": duration_min,
+        "duration_max": duration_max,
         "meas_name": meas_name, 
         "meas_uuid": meas_uuid, 
         "edge_info": edge_info, 
