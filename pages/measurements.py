@@ -4,6 +4,7 @@ from datetime import date, time, datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from urllib.parse import urlparse
 import pytz
+import pandas as pd
 
 STATUS_MAP = {
     "ready": "計測準備中",
@@ -260,7 +261,7 @@ def display_selected_measurement(item):
     edge_name = EDGE_NAME_MAP[edge_uuid]
 
     st.checkbox(
-        "この計測を選択する",
+        "この計測の選択を外す",
         key=f"meas_selected_{meas_uuid}",
         value=meas_uuid in st.session_state.checked_measurement_uuids,
         on_change=on_change_checkbox,
@@ -312,11 +313,22 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
             resp.raise_for_status()
             resp = resp.json()
 
-            for item in resp["items"]:
-                if item["data_type"] != 0:
-                    st.write(f"- type: {item['data_type']}, ch: {item['channel']}, id: {item['data_id']} (iSCPv1)")
-                else:
-                    st.write(f"- {item['data_id']}")
+            iscpv2 = False
+            if len(resp["items"]) != 0:
+                iscpv2 = resp["items"][0]==0
+
+            df = None
+            if iscpv2:
+                pd.DataFrame({
+                    "data_id": [x["data_id"] for x in resp["items"]],
+                })
+            else:
+                pd.DataFrame({
+                    "type": [x["data_type"] for x in resp["items"]],
+                    "channel": [x["channel"] for x in resp["items"]],
+                    "data_id": [x["data_id"] for x in resp["items"]],
+                })
+            st.write(df)
 
     
     # TODO ちゃんと機能するようにする
