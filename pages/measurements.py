@@ -209,7 +209,7 @@ def display_measurement(item, key_suffix=""):
 
         st.checkbox(
             "この計測を選択する",
-            key=f"meas_{meas_uuid}",
+            key=f"meas_{meas_uuid}{key_suffix}",
             value=meas_uuid in st.session_state.checked_measurement_uuids,
             on_change=on_change_checkbox,
             args=(meas_uuid,),
