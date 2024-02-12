@@ -291,18 +291,14 @@ with st.expander("検索結果", expanded=True):
 
 with st.expander("選択中の計測"):
     for meas_uuid in list(st.session_state.checked_measurement_uuids):
-        with st.container(border=True):
-            if not st.checkbox("この計測を選択する", key=f"meas_selected_{meas_uuid}", value=True):
-                st.session_state.checked_measurement_uuids.remove(meas_uuid)
-            
-            resp = requests.get(
-                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}",
-                headers={"X-Intdash-Token": st.session_state.token},
-            )
-            resp.raise_for_status()
-            resp = resp.json()
+        resp = requests.get(
+            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}",
+            headers={"X-Intdash-Token": st.session_state.token},
+        )
+        resp.raise_for_status()
+        resp = resp.json()
 
-            display_measurement(resp, key_suffix="_selected")
+        display_measurement(resp, key_suffix="_selected")
 
 
     
