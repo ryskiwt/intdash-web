@@ -401,7 +401,7 @@ def display_companion_measurement(item):
             pd.DataFrame({
                 "Data Type": [x["data_type"] for x in item["data_ids"]],
                 "Data Name": [f"{x['channel']}/{x['data_id']}" if x["data_type"]!=0 else x["data_id"] for x in item["data_ids"]],
-                "iSCPv1": [x["data_type"]!=0 for x in item["data_ids"]],
+                "iSCPv1": ["yes" if x["data_type"]!=0 else "" for x in item["data_ids"]],
             }),
             column_config={"_index": "#"},
             use_container_width=True,
@@ -437,18 +437,12 @@ for item in companion_measurements:
             "ノード名": [EDGE_NAME_MAP[edge_uuid]],
             "計測UUID": [meas_uuid],
         })],
-        column_config={"_index": "#"},
-        use_container_width=True,
-    )
     
-st.dataframe(df, )
-
-    
-    # TODO ちゃんと機能するようにする
-
-
-
-
+st.dataframe(
+    df,
+    column_config={"_index": "#"},
+    use_container_width=True,
+)
 
 
 parsed_url = urlparse(st.session_state.url)
