@@ -165,7 +165,7 @@ with st.expander("検索条件", expanded=True):
             format_func=lambda item: item["name"],
             index=None if st.session_state.conditions["edge_info"] is None else list(EDGE_NAME_MAP.keys()).index(st.session_state.conditions["edge_info"]["uuid"]),
         )
-        if st.checkbox("未選択に初期化", value=edge_info is not None):
+        if col2.checkbox("未選択に初期化", value=edge_info is not None):
             edge_info = None
 
 
