@@ -291,7 +291,7 @@ def display_selected_measurement(item):
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
 
-with st.expander("選択中の計測"):
+with st.container("選択中の計測"):
     for meas_uuid in list(st.session_state.checked_measurement_uuids):
         with st.container(border=True):
             resp = requests.get(
