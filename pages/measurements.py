@@ -156,7 +156,7 @@ with st.expander("検索条件", expanded=True):
         meas_uuid = col2.text_input(label="UUID", placeholder="Optional", value=st.session_state.conditions["meas_uuid"])
     
     edge_info = st.selectbox(
-        label="エッジ名",
+        label="ノード名",
         options=[{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()],
         format_func=lambda item: item["name"],
         index=None if st.session_state.conditions["edge_info"] is None else EDGE_NAME_MAP.keys().index(st.session_state.conditions["edge_info"]["uuid"]),
@@ -193,59 +193,118 @@ def td_to_human_readable_string(td):
     hours += td.days*24
     return f"{hours} 時間 {minutes} 分 {seconds} 秒"
 
-def cropped_start_end(basetime, duration, tz):
-    splitted = basetime.split(".")
+def cropped_start_end(basetime_rfc3339, duration, tz):
+    splitted = basetime_rfc3339.split(".")
     start_time = datetime.fromisoformat(splitted[0]).astimezone(ZoneInfo(tz))
     end_time = (start_time + duration).replace(microsecond=0)
-    return start_time, end_time
+    return start_time.strftime("%Y/%m/%d %H:%M:%S"), end_time.strftime("%Y/%m/%d %H:%M:%S")
+
+def display_measurement(item):
+    with st.container(border=True):
+        meas_uuid = item["uuid"]
+        meas_name = "<名称なし>" if item["name"]=="" else item["name"]
+
+        edge_uuid = item["edge_uuid"]
+        edge_name = EDGE_NAME_MAP[edge_uuid]
+
+        st.checkbox(
+            "この計測を選択する",
+            key=f"meas_{meas_uuid}",
+            value=meas_uuid in st.session_state.checked_measurement_uuids,
+            on_change=on_change_checkbox,
+            args=(meas_uuid,),
+        )
+
+        with st.container():
+            duration = timedelta(microseconds=item["max_elapsed_time"])
+            start_time, end_time = cropped_start_end(item["basetime"], duration, tz)
+            col1, col2 = st.columns(2)
+            col1.write(start_time + " - " + end_time)
+            col2.write(td_to_human_readable_string(duration))
+
+        with st.container():
+            col1, col2 = st.columns(2)
+            col1.write("ステータス: " + STATUS_MAP[item["sequences"]["status"]])
+
+            received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
+            received_data_points = item["sequences"]["received_data_points"]
+            expected_data_points = item["sequences"]["expected_data_points"]
+            processed_ratio = item["processed_ratio"] * 100.0
+
+            if received_data_points <= expected_data_points:
+                col2.write(f"{received_chunks_ratio:3.1f} % ({received_data_points} / {expected_data_points} points)")
+            else:
+                col2.write(f"{processed_ratio:3.1f} % (iSCPv1)")
+
+        st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
+        st.write(f"計測: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
+
 
 with st.expander("検索結果", expanded=True):
     with st.container():
         col1, col2 = st.columns([1, 4])
         col1.button("< 前のページ", on_click=on_click_prev)
         col2.button("次のページ >", on_click=on_click_next)
+
     st.slider("ページ", label_visibility="hidden", min_value=1, max_value=st.session_state.total_page, value=st.session_state.page, on_change=on_change_slider, key="slider")
 
-    for i, item in enumerate(st.session_state.measurements):
-        with st.container(border=True):
-            meas_uuid = item["uuid"]
-            meas_name = "<名称なし>" if item["name"]=="" else item["name"]
-            edge_uuid = item["edge_uuid"]
-            edge_name = EDGE_NAME_MAP[edge_uuid]
+    for item in st.session_state.measurements:
+        display_measurement(item)
+        # with st.container(border=True):
+        #     meas_uuid = item["uuid"]
+        #     meas_name = "<名称なし>" if item["name"]=="" else item["name"]
 
-            with st.container():
-                duration = timedelta(microseconds=item["max_elapsed_time"])
-                start_time, end_time = cropped_start_end(item["basetime"], duration, tz)
+        #     edge_uuid = item["edge_uuid"]
+        #     edge_name = EDGE_NAME_MAP[edge_uuid]
 
-                col1, col2 = st.columns(2)
-                col1.write(start_time.strftime("%Y/%m/%d %H:%M:%S") + " - " + end_time.strftime("%Y/%m/%d %H:%M:%S"))
-                col2.write(td_to_human_readable_string(duration))
+        #     st.checkbox(
+        #         "この計測を選択する",
+        #         key=f"meas_{meas_uuid}",
+        #         value=meas_uuid in st.session_state.checked_measurement_uuids,
+        #         on_change=on_change_checkbox,
+        #         args=(meas_uuid,),
+        #     )
 
-            with st.container():
-                col1, col2 = st.columns(2)
-                col1.write("ステータス: " + STATUS_MAP[item["sequences"]["status"]])
+        #     with st.container():
+        #         duration = timedelta(microseconds=item["max_elapsed_time"])
+        #         start_time, end_time = cropped_start_end(item["basetime"], duration, tz)
+        #         col1, col2 = st.columns(2)
+        #         col1.write(start_time + " - " + end_time)
+        #         col2.write(td_to_human_readable_string(duration))
 
-                received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
-                received_data_points = item["sequences"]["received_data_points"]
-                expected_data_points = item["sequences"]["expected_data_points"]
-                processed_ratio = item["processed_ratio"] * 100.0
+        #     with st.container():
+        #         col1, col2 = st.columns(2)
+        #         col1.write("ステータス: " + STATUS_MAP[item["sequences"]["status"]])
 
-                if received_data_points <= expected_data_points:
-                    col2.write(f"{received_chunks_ratio:3.1f} % ({received_data_points} / {expected_data_points} points)")
-                else:
-                    col2.write(f"{processed_ratio:3.1f} % (iSCPv1)")
+        #         received_chunks_ratio = item["sequences"]["received_chunks_ratio"] * 100.0
+        #         received_data_points = item["sequences"]["received_data_points"]
+        #         expected_data_points = item["sequences"]["expected_data_points"]
+        #         processed_ratio = item["processed_ratio"] * 100.0
 
-            st.write(f"エッジ名: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
-            st.write(f"計測名: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
+        #         if received_data_points <= expected_data_points:
+        #             col2.write(f"{received_chunks_ratio:3.1f} % ({received_data_points} / {expected_data_points} points)")
+        #         else:
+        #             col2.write(f"{processed_ratio:3.1f} % (iSCPv1)")
 
-            checked = meas_uuid in st.session_state.checked_measurement_uuids
-            st.checkbox("この計測を選択する", key=f"meas_{meas_uuid}", value=checked, on_change=on_change_checkbox, args=(meas_uuid,))
-            # TODO メタ情報を足しておく
+        #     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
+        #     st.write(f"計測: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
 
 with st.expander("選択中の計測"):
     for meas_uuid in list(st.session_state.checked_measurement_uuids):
-        if not st.checkbox(meas_uuid, key=f"meas_selected_{meas_uuid}", value=True):
-            st.session_state.checked_measurement_uuids.remove(meas_uuid)
+        with st.container(border=True):
+            if not st.checkbox("この計測を選択する", key=f"meas_selected_{meas_uuid}", value=True):
+                st.session_state.checked_measurement_uuids.remove(meas_uuid)
+            
+            resp = requests.get(
+                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}",
+                headers={"X-Intdash-Token": st.session_state.token},
+            )
+            resp.raise_for_status()
+            resp = resp.json()
+
+            display_measurement(resp)
+
+
     
     # TODO ちゃんと機能するようにする
 
