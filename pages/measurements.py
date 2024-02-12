@@ -343,18 +343,18 @@ else:
         )
         resp.raise_for_status()
         resp = resp.json()
-        measurements = resp["items"]
 
-        for i, meas in enumerate(measurements):
+        for meas in resp["items"]:
             resp2 = requests.get(
                 url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas['uuid']}/getids",
                 headers={"X-Intdash-Token": st.session_state.token},
             )
             resp2.raise_for_status()
             resp2 = resp2.json()
-            measurements[i]["data_ids"] = resp2["items"]
 
-        companion_measurements += measurements
+            if 0 < len(resp2["items"]):
+                meas["data_ids"] = resp2["items"]
+                companion_measurements.append(meas)
 
         page += 1
         if not resp["page"]["next"]:
