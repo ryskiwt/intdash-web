@@ -317,7 +317,7 @@ for meas_uuid in list(st.session_state.checked_measurement_uuids):
         if id_count == 0:
             st.write(f"データID: 0 件")
             
-        else
+        else:
             iscpv2 = resp["items"][0]["data_type"]==0
 
             if iscpv2:
