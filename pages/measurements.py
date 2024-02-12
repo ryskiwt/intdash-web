@@ -436,13 +436,20 @@ for item in companion_measurements:
             "データ名": [data_name],
             "ノード名": [EDGE_NAME_MAP[edge_uuid]],
             "計測UUID": [meas_uuid],
-        })],
+        })])
     
 st.dataframe(
     df,
     column_config={"_index": "#"},
     use_container_width=True,
 )
+
+    
+    # TODO ちゃんと機能するようにする
+
+
+
+
 
 
 parsed_url = urlparse(st.session_state.url)
