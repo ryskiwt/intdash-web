@@ -405,7 +405,8 @@ def display_companion_measurement(item):
             st.write(f"**データID {id_count}件**")
             st.dataframe(
                 pd.DataFrame({
-                    "Data ID": [x["data_id"] for x in resp["items"]],
+                    "Data Type": [x["data_type"] for x in item["data_ids"]],
+                    "Data Name": [f"{x['channel']/x['data_id']}" for x in item["data_ids"]],
                 }),
                 column_config={"_index": "#"},
                 use_container_width=True,
@@ -415,9 +416,9 @@ def display_companion_measurement(item):
             st.write(f"**データID {id_count}件 (iSCPv1)**")
             st.dataframe(
                 pd.DataFrame({
-                    "Type": [x["data_type"] for x in resp["items"]],
-                    "CH": [x["channel"] for x in resp["items"]],
-                    "Data ID": [x["data_id"] for x in resp["items"]],
+                    "Data Type": [x["data_type"] for x in item["data_ids"]],
+                    "Channel": [x["channel"] for x in item["data_ids"]],
+                    "Data ID": [x["data_id"] for x in item["data_ids"]],
                 }),
                 column_config={"_index": "#"},
                 use_container_width=True,
