@@ -128,6 +128,7 @@ def search():
     st.session_state.measurements = resp["items"]
 
 
+st.write("## 検索"):
 with st.expander("検索条件", expanded=True):
     def craete_datetime_input(label, date_value, time_value, frac_value):
         with st.container():
@@ -291,31 +292,31 @@ def display_selected_measurement(item):
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
 
-with st.container("選択中の計測"):
-    for meas_uuid in list(st.session_state.checked_measurement_uuids):
-        with st.container(border=True):
+st.write("## 選択中の計測"):
+for meas_uuid in list(st.session_state.checked_measurement_uuids):
+    with st.container(border=True):
+        resp = requests.get(
+            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}",
+            headers={"X-Intdash-Token": st.session_state.token},
+        )
+        resp.raise_for_status()
+        resp = resp.json()
+
+        display_selected_measurement(resp)
+
+        with st.expander("データID", expanded=False):
             resp = requests.get(
-                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}",
+                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}/getids",
                 headers={"X-Intdash-Token": st.session_state.token},
             )
             resp.raise_for_status()
             resp = resp.json()
 
-            display_selected_measurement(resp)
-
-            with st.expander("データID", expanded=False):
-                resp = requests.get(
-                    url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas_uuid}/getids",
-                    headers={"X-Intdash-Token": st.session_state.token},
-                )
-                resp.raise_for_status()
-                resp = resp.json()
-
-                for item in resp["items"]:
-                    if item["data_type"] != 0:
-                        st.write(f"- type: {item['data_type']}, ch: {item['channel']}, id: {item['data_id']} (iSCPv1)")
-                    else:
-                        st.write(f"- {item['data_id']}")
+            for item in resp["items"]:
+                if item["data_type"] != 0:
+                    st.write(f"- type: {item['data_type']}, ch: {item['channel']}, id: {item['data_id']} (iSCPv1)")
+                else:
+                    st.write(f"- {item['data_id']}")
 
     
     # TODO ちゃんと機能するようにする
