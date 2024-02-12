@@ -346,15 +346,15 @@ else:
         measurements = resp["items"]
 
         for i, meas in enumerate(measurements):
-            resp = requests.get(
+            resp2 = requests.get(
                 url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas['uuid']}/getids",
                 headers={"X-Intdash-Token": st.session_state.token},
             )
-            resp.raise_for_status()
-            resp = resp.json()
-            measurements[i]["data_ids"] = resp["items"]
+            resp2.raise_for_status()
+            resp2 = resp2.json()
+            measurements[i]["data_ids"] = resp2["items"]
 
-        companion_measurements += resp["items"]
+        companion_measurements += measurements
 
         page += 1
         if not resp["page"]["next"]:
