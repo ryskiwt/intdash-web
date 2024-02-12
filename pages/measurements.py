@@ -85,8 +85,8 @@ def on_click_next():
     st.session_state.page += 1
     search()
 
-def on_change_checkbox(meas_uuid):
-    checked = st.session_state[f"meas_{meas_uuid}"]
+def on_change_checkbox(meas_uuid, key):
+    checked = st.session_state[key]
     if checked:
         st.session_state.checked_measurement_uuids.add(meas_uuid)
     else:
@@ -212,7 +212,7 @@ def display_measurement(item, key_suffix=""):
             key=f"meas_{meas_uuid}{key_suffix}",
             value=meas_uuid in st.session_state.checked_measurement_uuids,
             on_change=on_change_checkbox,
-            args=(meas_uuid,),
+            args=(meas_uuid, f"meas_{meas_uuid}{key_suffix}"),
         )
 
         with st.container():
