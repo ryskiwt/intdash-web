@@ -159,8 +159,8 @@ with st.expander("検索条件", expanded=True):
 
     with st.container():
         col1, col2 = st.columns(2)
-        duration_min = col1.number_input(label="計測の長さの最小値", placeholder="Optional", value=st.session_state.conditions["duration_min"])
-        duration_max = col2.number_input(label="計測の長さの最大値", placeholder="Optional", value=st.session_state.conditions["duration_max"])
+        duration_min = col1.number_input(label="計測長の最小値（秒）", placeholder="Optional", value=st.session_state.conditions["duration_min"])
+        duration_max = col2.number_input(label="計測長の最大値（秒）", placeholder="Optional", value=st.session_state.conditions["duration_max"])
 
     with st.container():
         col1, col2 = st.columns(2)
