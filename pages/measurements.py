@@ -319,7 +319,7 @@ else:
     resp.raise_for_status()
     resp = resp.json()
 
-    meas_start = datetime.fromisoformat(resp["basetime"])
+    meas_start = datetime.fromisoformat(resp["basetime"].replace("Z", "+0:00"))
     meas_end = meas_start + timedelta(microseconds=resp["max_elapsed_time"])
 
     with st.container(border=True):
