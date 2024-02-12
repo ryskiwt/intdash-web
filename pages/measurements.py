@@ -432,10 +432,10 @@ for item in companion_measurements:
             data_type = data_id["data_type"]
             data_name = data_id['data_id']
         df = pd.concat([df, pd.DataFrame({
-            "ノード名": [f"{EDGE_NAME_MAP[edge_uuid]}  ({edge_uuid})"],
+            "ノード名": [f"{EDGE_NAME_MAP[edge_uuid]}  ({edge_uuid[:7]}...)"],
             "データ型": [data_type],
             "データ名": [data_name],
-            "計測": [f"{'<名称なし>' if meas_name=='' else meas_name} ({meas_uuid})"],
+            "計測": [f"{'<名称なし>' if item['name']=='' else meas_name} ({meas_uuid[:7]}...)"],
         })], ignore_index=True)
     
 st.dataframe(
