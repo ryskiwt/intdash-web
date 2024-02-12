@@ -159,7 +159,7 @@ with st.expander("検索条件", expanded=True):
         label="ノード名",
         options=[{"name": v, "uuid": k} for k,v in EDGE_NAME_MAP.items()],
         format_func=lambda item: item["name"],
-        index=None if st.session_state.conditions["edge_info"] is None else EDGE_NAME_MAP.keys().index(st.session_state.conditions["edge_info"]["uuid"]),
+        index=None if st.session_state.conditions["edge_info"] is None else list(EDGE_NAME_MAP.keys()).index(st.session_state.conditions["edge_info"]["uuid"]),
     )
     
     tz = st.selectbox(
