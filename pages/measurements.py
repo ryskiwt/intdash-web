@@ -416,9 +416,9 @@ def display_companion_measurement(item):
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
 
 
-with st.expander("同範囲にある計測"):
+with st.expander(f"同範囲にある計測 {len(companion_measurements)}件", expanded=False):
     for item in companion_measurements:
-        with st.container(border=False):
+        with st.container(border=True):
             display_companion_measurement(item)
 
 
