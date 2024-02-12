@@ -61,6 +61,7 @@ declare_variable("conditions", {
 })
 declare_variable("page", 1)
 declare_variable("total_page", 0)
+declare_variable("total_count", 0)
 declare_variable("checked_measurement_uuid", None)
 
 def dtf_to_query(d, t, f, tz):
@@ -326,43 +327,6 @@ else:
     with st.container(border=True):
         display_selected_measurement(resp)
 
-        resp = requests.get(
-            url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{st.session_state.checked_measurement_uuid}/getids",
-            headers={"X-Intdash-Token": st.session_state.token},
-        )
-        resp.raise_for_status()
-        resp = resp.json()
-
-        iscpv2 = False
-        id_count = len(resp["items"])
-        if id_count == 0:
-            st.write(f"**データID 0件**")
-            
-        else:
-            iscpv2 = resp["items"][0]["data_type"]==0
-
-            if iscpv2:
-                st.write(f"**データID {id_count}件**")
-                st.dataframe(
-                    pd.DataFrame({
-                        "Data ID": [x["data_id"] for x in resp["items"]],
-                    }),
-                    column_config={"_index": "#"},
-                    use_container_width=True,
-                )
-
-            else:
-                st.write(f"**データID {id_count}件 (iSCPv1)**")
-                st.dataframe(
-                    pd.DataFrame({
-                        "Type": [x["data_type"] for x in resp["items"]],
-                        "CH": [x["channel"] for x in resp["items"]],
-                        "Data ID": [x["data_id"] for x in resp["items"]],
-                    }),
-                    column_config={"_index": "#"},
-                    use_container_width=True,
-                )
-
     page = 1
     companion_measurements = []
     while True:
@@ -379,6 +343,17 @@ else:
         )
         resp.raise_for_status()
         resp = resp.json()
+        measurements = resp["items"]
+
+        for i, meas in enumerate(measurements):
+            resp = requests.get(
+                url=f"{st.session_state.url}/api/v1/projects/{st.session_state.project_uuid}/measurements/{meas['uuid']}/getids",
+                headers={"X-Intdash-Token": st.session_state.token},
+            )
+            resp.raise_for_status()
+            resp = resp.json()
+            measurements[i]["data_ids"] = resp["items"]
+
         companion_measurements += resp["items"]
 
         page += 1
@@ -415,6 +390,36 @@ def display_companion_measurement(item):
 
     st.write(f"計測: [{meas_name}]({st.session_state.url}/console/measurements/{meas_uuid}/?projectUuid={st.session_state.project_uuid}) ({meas_uuid})")
     st.write(f"ノード: [{edge_name}]({st.session_state.url}/console/edges/{edge_uuid}/?projectUuid={st.session_state.project_uuid})  ({edge_uuid})")
+
+    iscpv2 = False
+    id_count = len(item["data_ids"])
+    if id_count == 0:
+        st.write(f"**データID 0件**")
+        
+    else:
+        iscpv2 = item["data_ids"][0]["data_type"]==0
+
+        if iscpv2:
+            st.write(f"**データID {id_count}件**")
+            st.dataframe(
+                pd.DataFrame({
+                    "Data ID": [x["data_id"] for x in resp["items"]],
+                }),
+                column_config={"_index": "#"},
+                use_container_width=True,
+            )
+
+        else:
+            st.write(f"**データID {id_count}件 (iSCPv1)**")
+            st.dataframe(
+                pd.DataFrame({
+                    "Type": [x["data_type"] for x in resp["items"]],
+                    "CH": [x["channel"] for x in resp["items"]],
+                    "Data ID": [x["data_id"] for x in resp["items"]],
+                }),
+                column_config={"_index": "#"},
+                use_container_width=True,
+            )
 
 
 with st.expander(f"同範囲にある計測 {len(companion_measurements)}件", expanded=False):
